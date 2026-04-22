@@ -75,5 +75,4 @@ coverage/
 .tmp/
 .cache/
 
-*.html
-!example-ticket-page-2.html
+example-ticket-page-2.html

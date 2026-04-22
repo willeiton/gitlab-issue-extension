@@ -1,3 +1,8 @@
+import { getConfig } from "./config.js";
+
+const config = getConfig();
+
+console.log("CONFIG:", config);
 chrome.action.onClicked.addListener(async (tab) => {
     try {
         if (!tab.id) throw new Error("No tab ID");

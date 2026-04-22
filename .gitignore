@@ -1,0 +1,76 @@
+# -------------------------
+
+# Environment variables
+
+# -------------------------
+
+.env
+.env.*
+*.env
+
+# -------------------------
+
+# Node (if you add tooling later)
+
+# -------------------------
+
+node_modules/
+dist/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------------------------
+
+# Logs
+
+# -------------------------
+
+logs/
+*.log
+
+# -------------------------
+
+# OS files
+
+# -------------------------
+
+.DS_Store
+Thumbs.db
+
+# -------------------------
+
+# IDE - PhpStorm / IntelliJ
+
+# -------------------------
+
+.idea/
+*.iml
+out/
+
+# -------------------------
+
+# VSCode (optional)
+
+# -------------------------
+
+.vscode/
+
+# -------------------------
+
+# Extension build artifacts (future)
+
+# -------------------------
+
+*.zip
+
+# -------------------------
+
+# Misc
+
+# -------------------------
+
+coverage/
+.tmp/
+.cache/

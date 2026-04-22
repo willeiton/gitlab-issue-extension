@@ -75,5 +75,5 @@ coverage/
 .tmp/
 .cache/
 
-*.nj
+*.html
 !example-ticket-page-2.html

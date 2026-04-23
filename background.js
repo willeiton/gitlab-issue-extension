@@ -40,18 +40,19 @@ chrome.action.onClicked.addListener(async (tab) => {
         await updateStep(tab.id, steps[0], "active");
 
         // (fake for now)
+        const extractedData = {
+            title: "Test title",
+            url: tab.url,
+            content: "User reported something is broken"
+        };
         await sleep(500);
-
         await updateStep(tab.id, steps[0], "done");
 
         // -------------------------
         // STEP 2 — AI Formatting
         // -------------------------
         await updateStep(tab.id, steps[1], "active");
-
-        // (fake for now)
-        await sleep(700);
-
+        const aiDescription = await formatWithGemini(extractedData);
         await updateStep(tab.id, steps[1], "done");
 
         // -------------------------
@@ -60,8 +61,8 @@ chrome.action.onClicked.addListener(async (tab) => {
         await updateStep(tab.id, steps[2], "active");
 
         const issue = await createGitlabIssue({
-            title: "Test issue from extension",
-            description: "This is a test issue created from my extension 🚀"
+            title: extractedData.title,
+            description: aiDescription
         });
 
         await updateStep(tab.id, steps[2], "done");
@@ -117,4 +118,69 @@ async function updateStep(tabId, step, status) {
         type: "STEP_UPDATE",
         payload: { step, status }
     });
+}
+
+async function formatWithGemini({ title, url, content }) {
+    const { GEMINI_API_KEY } = await getConfig();
+
+    const prompt = `
+You are a system that generates GitLab issues.
+
+Follow this EXACT structure:
+
+## Context
+...
+
+## Description
+...
+
+## Steps to reproduce
+...
+
+## Expected behavior
+...
+
+## Actual behavior
+...
+
+Rules:
+- Return ONLY the formatted issue
+- Do NOT add explanations
+- Do NOT skip sections
+- Use "N/A" if missing
+
+DATA:
+Title: ${title}
+URL: ${url}
+Content: ${content}
+`;
+
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        role: "user",
+                        parts: [{ text: prompt }]
+                    }
+                ]
+            })
+        }
+    );
+
+    if (!response.ok) {
+        const err = await response.text();
+        throw new Error("Gemini error: " + err);
+    }
+
+    const data = await response.json();
+
+    console.log("Gemini raw:", data);
+
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "N/A";
 }

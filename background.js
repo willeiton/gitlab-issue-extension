@@ -3,12 +3,6 @@ import { getConfig } from "./config.js";
 
 
 chrome.action.onClicked.addListener(async (tab) => {
-
-    const { userId, milestoneId } = await getConfig();
-
-    console.log("User:", userId);
-    console.log("Milestone:", milestoneId);
-
     try {
         if (!tab.id) throw new Error("No tab ID");
 

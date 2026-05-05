@@ -1,6 +1,14 @@
 import { getConfig } from "./config.js";
 
+
+
 chrome.action.onClicked.addListener(async (tab) => {
+
+    const { userId, milestoneId } = await getConfig();
+
+    console.log("User:", userId);
+    console.log("Milestone:", milestoneId);
+
     try {
         if (!tab.id) throw new Error("No tab ID");
 
@@ -91,7 +99,7 @@ function sleep(ms) {
 
 
 async function createGitlabIssue({ title, description }) {
-    const { gitlabToken, projectId, baseUrl } = await getConfig();
+    const { gitlabToken, projectId, baseUrl, userId, milestoneId } = await getConfig();
 
     const response = await fetch(`${baseUrl}/projects/${projectId}/issues`, {
         method: "POST",
@@ -101,7 +109,9 @@ async function createGitlabIssue({ title, description }) {
         },
         body: JSON.stringify({
             title,
-            description
+            description,
+            assignee_ids: [userId],
+            milestone_id: milestoneId
         })
     });
 

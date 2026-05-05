@@ -5,6 +5,8 @@ export async function getConfig() {
         gitlabToken: ENV.GITLAB_TOKEN,
         projectId: ENV.GITLAB_PROJECT_ID,
         baseUrl: ENV.GITLAB_BASE_URL,
-        GEMINI_API_KEY: ENV.GEMINI_API_KEY
+        GEMINI_API_KEY: ENV.GEMINI_API_KEY,
+        userId: ENV.GITLAB_USER_ID,
+        milestoneId: ENV.GITLAB_MILESTONE_ID
     };
 }

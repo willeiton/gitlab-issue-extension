@@ -7,6 +7,9 @@ export async function getConfig() {
         baseUrl: ENV.GITLAB_BASE_URL,
         GEMINI_API_KEY: ENV.GEMINI_API_KEY,
         userId: ENV.GITLAB_USER_ID,
-        milestoneId: ENV.GITLAB_MILESTONE_ID
+        milestoneId: ENV.GITLAB_MILESTONE_ID,
+        labels: ENV.GITLAB_DEFAULT_LABELS,
+        severity: ENV.GITLAB_SEVERITY,
+        estimateHours: ENV.GITLAB_ESTIMATE_HOURS
     };
 }

@@ -93,7 +93,20 @@ function sleep(ms) {
 
 
 async function createGitlabIssue({ title, description }) {
-    const { gitlabToken, projectId, baseUrl, userId, milestoneId } = await getConfig();
+    const {
+        gitlabToken,
+        projectId,
+        baseUrl,
+        userId,
+        milestoneId,
+        labels,
+        severity,
+        estimateHours
+    } = await getConfig();
+
+    const dueDate = new Date().toISOString().split("T")[0];
+
+    const allLabels = [...labels, severity].join(",");
 
     const response = await fetch(`${baseUrl}/projects/${projectId}/issues`, {
         method: "POST",
@@ -105,7 +118,10 @@ async function createGitlabIssue({ title, description }) {
             title,
             description,
             assignee_ids: [userId],
-            milestone_id: milestoneId
+            milestone_id: milestoneId,
+            labels: allLabels,
+            due_date: dueDate,
+            time_estimate: estimateHours * 3600
         })
     });
 

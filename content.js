@@ -103,7 +103,6 @@ function extractTicketData() {
 
     if (!blocks.length) return null;
 
-    // 🔥 Find LAST block that contains CLIENTE
     let target = null;
 
     for (let i = blocks.length - 1; i >= 0; i--) {
@@ -131,17 +130,7 @@ function extractTicketData() {
 
     if (!target) return null;
 
-    // 🧠 Helper to extract fields
-    function getField(label, text) {
-        const regex = new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n[A-ZÁÉÍÓÚ ]+:|$)`, 'i');
-        const match = text.match(regex);
-        return match ? match[1].trim() : "N/A";
-    }
-
-    const ticketElement = document.querySelector(
-        '#itemoptionsnav > div > div:nth-child(2) > div.ticketinfoitemlink'
-    );
-
+    // Ticket code
     const ticketContainer = document.querySelector('#itemoptionsnav');
 
     let ticketCode = "N/A";
@@ -152,7 +141,6 @@ function extractTicketData() {
         for (const link of links) {
             const text = link.innerText.trim();
 
-            // Example: OFT-392-22656
             if (/^[A-Z]+-\d+-\d+$/i.test(text)) {
                 ticketCode = text;
                 break;
@@ -162,13 +150,7 @@ function extractTicketData() {
 
     return {
         raw: target,
-        ticketCode,
-        client: getField("CLIENTE", target),
-        version: getField("VERSIÓN", target),
-        module: getField("MODULO", target),
-        activity: getField("ACTIVIDAD QUE ESTABA REALIZANDO", target),
-        hallazgo: getField("HALLAZGO", target),
-        expected: getField("COMPORTAMIENTO ESPERADO", target)
+        ticketCode
     };
 }
 

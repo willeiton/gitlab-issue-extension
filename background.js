@@ -59,17 +59,9 @@ chrome.action.onClicked.addListener(async (tab) => {
         // -------------------------
         await updateStep(tab.id, steps[1], "active");
         const aiInput = {
-            title: extractedData.module || "Sin módulo",
+            ticketCode: extractedData.ticketCode,
             url: tab.url,
-            content: `
-            TICKET: ${extractedData.ticketCode}
-CLIENTE: ${extractedData.client}
-VERSIÓN: ${extractedData.version}
-MODULO: ${extractedData.module}
-ACTIVIDAD: ${extractedData.activity}
-HALLAZGO: ${extractedData.hallazgo}
-COMPORTAMIENTO ESPERADO: ${extractedData.expected}
-`
+            raw: extractedData.raw
         };
 
         const aiRaw = await formatWithGemini(aiInput);
@@ -171,7 +163,7 @@ async function updateStep(tabId, step, status) {
     });
 }
 
-async function formatWithGemini({ title, url, content }) {
+async function formatWithGemini({ ticketCode, url, raw }) {
     const { GEMINI_API_KEY } = await getConfig();
 
     const prompt = `
@@ -201,22 +193,30 @@ DESCRIPTION:
 [{TICKET_CODE}]({TICKET_URL})
 
 #### Evidencia
-> {EVIDENCE OR "N.A."}
-> {EVIDENCE_URL if exists}
+> {EVIDENCE_URL or "N.A."}
 
 Rules:
 - Use the provided TICKET field as TICKET_CODE.
 - Use the provided URL as TICKET_URL.
-- Do NOT omit sections
-- Do NOT add text in the evidence section. Text is not allowed in evidence section
-- Do NOT add explanations
-- Do NOT add extra text outside TITLE and DESCRIPTION
-- Keep strict formatting
+- Use the RAW CONTENT section as the primary source of truth.
+- Infer all fields from the RAW CONTENT.
+- ONLY place URLs inside the Evidencia section.
+- Do NOT add explanatory text inside Evidencia.
+- If no evidence link is clearly identified, use:
+> N.A.
+- Do NOT invent links.
+- Do NOT omit sections.
+- Do NOT add explanations.
+- Do NOT add extra text outside TITLE and DESCRIPTION.
+- Keep strict formatting.
 
 DATA:
-Title: ${title}
+TICKET: ${ticketCode}
+
 URL: ${url}
-Content: ${content}
+
+RAW CONTENT:
+${raw}
 `;
 
     const response = await fetch(

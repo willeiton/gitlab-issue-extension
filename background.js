@@ -212,6 +212,29 @@ Rules:
 - Use the provided URL as TICKET_URL.
 - Use the RAW CONTENT section as the primary source of truth.
 - Infer all fields from the RAW CONTENT.
+
+- The TITLE must ALWAYS follow this exact format:
+Module - Short description
+
+- Use ONLY one separator:
+ - 
+
+- Do NOT use:
+  - en dash (–)
+  - em dash (—)
+  - colons
+  - brackets
+  - pipes
+  - extra symbols
+
+- The module name must start with uppercase.
+
+- The short description must use sentence case:
+  - first letter uppercase
+  - remaining words lowercase unless technically required
+- Keep the title concise and technical.
+- Do NOT exceed approximately 12 words in the short description.
+
 - ONLY place URLs inside the Evidencia section.
 - Do NOT add explanatory text inside Evidencia.
 - If no evidence link is clearly identified, use:

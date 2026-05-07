@@ -1,80 +1,1149 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Support Ticket</title>
+    <title>[#ZPH-445-83201]: ZEPHYR / Solicitud configuración Módulo Reportes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        /* Minimal styles to render ticket readable as standalone page */
+        body { font-family: Arial, sans-serif; background: #f5f0eb; margin: 0; padding: 0; }
+
+        /* Top bar */
+        .reheaderbar { background: #3a3a3a; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .rebarlogo a { color: #fff; font-weight: bold; font-size: 18px; text-decoration: none; letter-spacing: 1px; }
+        .cptopmenulink a { color: #ccc; font-size: 12px; text-decoration: none; }
+
+        /* Tab bar */
+        .topbar { background: #5a4e3a; padding: 4px 0; display: flex; gap: 2px; padding-left: 8px; }
+        .topbar .tab { padding: 6px 16px; background: #7a6a50; color: #fff; font-size: 12px; cursor: pointer; border-radius: 3px 3px 0 0; }
+        .topbar .tab.active { background: #c8a96e; color: #222; font-weight: bold; }
+
+        /* Ticket wrapper */
+        .ticket-wrapper { display: flex; gap: 0; min-height: calc(100vh - 80px); }
+
+        /* Left sidebar */
+        .staffnavbar { width: 200px; background: #f0e8d8; border-right: 1px solid #d0c4a8; padding: 8px 0; flex-shrink: 0; font-size: 11px; }
+        .navsub { margin-bottom: 12px; }
+        .navtitle { background: #c8b89a; color: #333; padding: 4px 8px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+        .ticketinfoitem { padding: 4px 8px; border-bottom: 1px solid #e0d4b8; }
+        .ticketinfoitemtitle { font-size: 9px; color: #888; text-transform: uppercase; font-weight: bold; }
+        .ticketinfoitemlink { color: #5a7faa; font-size: 11px; }
+        .ticketinfoitemcontent { color: #333; font-size: 11px; }
+        .ticketinfoitemtext { padding: 4px 8px; border-bottom: 1px solid #e0d4b8; }
+
+        /* Main content */
+        .cpuicontainer { flex: 1; padding: 0; background: #fff; }
+
+        /* Ticket header */
+        .ticketgeneralcontainer { padding: 8px 12px; }
+        .ticketgeneraldepartment a { color: #888; font-size: 11px; text-decoration: none; }
+        .ticketgeneraltitle { font-size: 16px; font-weight: bold; color: #333; margin: 4px 0; }
+        .ticketgeneralinfocontainer { font-size: 11px; color: #999; }
+
+        /* Properties bar */
+        .ticketgeneralproperties { background: #5f5f5f; padding: 6px 10px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+        .ticketgeneralpropertiesobject { padding: 4px 12px; color: #fff; }
+        .ticketgeneralpropertiestitle { font-size: 9px; color: #bbb; text-transform: uppercase; }
+        .ticketgeneralpropertiescontent { font-size: 12px; color: #fff; font-weight: bold; }
+        #generalpriorityproperties { background: #f0f018 !important; }
+        #generalpriorityproperties .ticketgeneralpropertiestitle { color: #555 !important; }
+        #generalpriorityproperties .ticketgeneralpropertiescontent { color: #222 !important; }
+        .ticketgeneralpropertiesdivider { color: #aaa; padding: 0 4px; }
+
+        /* Custom fields */
+        .customfieldstatic_pink { background: #fff0f4; border: 1px solid #f0c0cc; margin: 8px 12px; border-radius: 4px; }
+        .customfieldstaticcontainer2 { padding: 8px; }
+        .customfieldstatictitle { font-weight: bold; color: #c0405a; font-size: 12px; margin-bottom: 4px; }
+        .customfieldstaticrule_pink { border-top: 1px solid #f0c0cc; margin-bottom: 8px; }
+        .customfieldcol1_pink { background: #fce8ec; font-size: 11px; color: #555; font-weight: bold; }
+        .customfieldcol2_pink { background: #fff6f8; font-size: 11px; color: #333; }
+        table td { padding: 4px 6px; }
+
+        /* Notes */
+        .notebubble { background: #ffefbb; padding: 10px 14px; margin: 8px 12px; border-radius: 6px; border-left: 4px solid #f0c840; }
+        .notebubble blockquote { margin: 0; color: #555; font-size: 12px; font-style: italic; }
+        .notecite { font-size: 10px; color: #888; margin: 0 12px 8px; display: block; }
+
+        /* Toolbar */
+        .tabtoolbar { background: #e8e0d0; border-bottom: 1px solid #d0c4a8; }
+        .tabtoolbarsub ul { display: flex; list-style: none; margin: 0; padding: 4px 8px; gap: 2px; }
+        .tabtoolbarsub ul li a { display: flex; align-items: center; gap: 4px; padding: 4px 10px; background: #c8b89a; color: #333; text-decoration: none; font-size: 11px; border-radius: 3px; font-weight: bold; }
+        .tabtoolbarsub ul li a:hover { background: #b0a080; }
+
+        /* Tabs nav */
+        .ui-tabs-nav { list-style: none; margin: 0; padding: 4px 8px 0; display: flex; gap: 2px; background: #e8e0d0; border-bottom: 2px solid #c8b89a; }
+        .ui-tabs-nav li { padding: 6px 14px; background: #d8cdb8; border-radius: 4px 4px 0 0; cursor: pointer; font-size: 11px; color: #555; }
+        .ui-tabs-nav li.ui-state-active { background: #fff; color: #333; font-weight: bold; border-bottom: 2px solid #fff; margin-bottom: -2px; }
+        .notecounterred { display: inline-block; background: #c0203a; color: #fff; border-radius: 10px; font-size: 9px; padding: 1px 5px; margin-right: 4px; }
+
+        /* Ticket posts */
+        .ticketpostsholder { padding: 8px 12px; }
+        .ticketpostcontainer { margin-bottom: 16px; border: 1px solid #e0d8c8; border-radius: 6px; overflow: hidden; }
+        .ticketpostbar { background: #5a4e3a; padding: 6px 12px; display: flex; align-items: center; gap: 8px; }
+        .ticketpostbarname { color: #fff; font-weight: bold; font-size: 12px; }
+        .ticketpostbardesignation { color: #c8b89a; font-size: 10px; }
+        .ticketpostbarbadgeblue { background: #4a7ab0; border-radius: 3px; padding: 1px 6px; }
+        .ticketpostbarbadgered { background: #b03030; border-radius: 3px; padding: 1px 6px; }
+        .tpbadgetext { color: #fff; font-size: 9px; font-weight: bold; }
+        .ticketpostcontents { background: #fff; }
+        .ticketpostcontentsbar { background: #f5f0e8; padding: 4px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e0d0; }
+        .ticketbarcontents { font-size: 10px; color: #888; }
+        .ticketpostcontentsdetails { padding: 12px; }
+        .ticketpostcontentsattachments { margin-bottom: 8px; }
+        .ticketpostcontentsattachmentitem { display: inline-block; background: #f0e8d8; border: 1px solid #d0c4a8; border-radius: 3px; padding: 3px 8px; font-size: 11px; color: #5a7faa; text-decoration: none; margin-right: 6px; margin-bottom: 4px; }
+        .ticketpostcontentsdetailscontainer { font-size: 13px; color: #333; line-height: 1.6; white-space: pre-wrap; }
+        .ticketpostcontentsbottom { background: #f8f4ec; border-top: 1px solid #e8e0d0; padding: 4px 12px; font-size: 10px; color: #888; display: flex; justify-content: space-between; }
+        .ticketpostbarbottom { background: #f0e8d8; border-top: 1px solid #e0d8c8; padding: 4px 10px; text-align: right; }
+
+        /* Pagination */
+        .ticketpostpaginationtoolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; }
+        .gridhighlightpage, .gridnavpage { padding: 3px 8px; background: #e8e0d0; border-radius: 3px; margin-right: 4px; }
+        .gridnavpage a { color: #5a7faa; text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .ticket-wrapper { flex-direction: column; }
+            .staffnavbar { width: 100%; border-right: none; border-bottom: 1px solid #d0c4a8; }
+        }
+    </style>
 </head>
 <body>
-<div class="ticket-container">
 
-    <div class="ticket-header">
-        <strong>Ticket: Documents Module - Configuration Request</strong><br>
-        Created: 06 April 2026 10:43 AM &nbsp; Updated: 10 April 2026 10:38 AM
+<!-- TOP HEADER BAR -->
+<div class="reheaderbar">
+    <div class="rebarlogo">
+        <a href="https://soporte.applo.com/staff/index.php?/Base/Dashboard/Index">APPLO Support</a>
     </div>
-
-    <div class="ticket-info">
-        <strong>Department:</strong> Level 3 Support (Development)<br>
-        <strong>Owner:</strong> Agent A<br>
-        <strong>Status:</strong> Completed<br>
-        <strong>Priority:</strong> Medium<br>
-        <strong>User:</strong> Client Group<br>
-        <strong>Organization:</strong> Client Company<br>
-        <strong>Module:</strong> Documents
+    <div class="cptopmenulink">
+        <a href="https://soporte.applo.com/" target="_blank">Support Center</a>
     </div>
-
-    <div class="ticket-posts">
-
-        <div class="post">
-            <strong>User</strong> — 06 April 2026 10:43 AM<br>
-            <p>Good morning,<br><br>
-                This is to validate the functionality when generating a new document or editing it, as it is not saving the provided information and automatically removes the signature fields.<br><br>
-                Thank you.</p>
-            <em>Attachment: Video file (11.89 MB)</em>
-        </div>
-
-        <div class="post">
-            <strong>Support Staff</strong> — 06 April 2026 10:45 AM<br>
-            <p>Dear client,<br><br>
-                We confirm receipt of your communication. Your request has been registered and assigned to the appropriate department for resolution. Our team will contact you once a solution is available.<br><br>
-                Thank you for your trust in our services.</p>
-        </div>
-
-        <div class="post">
-            <strong>Support Engineer</strong> — 06 April 2026 06:20 PM<br>
-            <p><strong>Analysis:</strong><br><br>
-                <strong>Version:</strong> v5.63.420<br>
-                <strong>Module:</strong> Documents<br>
-                <strong>Activity:</strong> Creating document content.<br><br>
-                <strong>Finding:</strong> When document content includes emojis, the information stored in the document is lost and not saved. Plain text content is saved correctly.<br><br>
-                <strong>Expected behavior:</strong> Emojis and special characters should be preserved within the document without data loss.</p>
-            <em>Attachments: 2 video files</em>
-        </div>
-
-        <div class="post">
-            <strong>User</strong> — 07 April 2026 08:33 AM<br>
-            <p>Good morning,<br><br>
-                Attached as requested.</p>
-            <em>Attachment: Document file (18.01 KB)</em>
-        </div>
-
-        <div class="post">
-            <strong>Support Engineer</strong> — 10 April 2026 10:38 AM<br>
-            <p>Greetings,<br><br>
-                In a call with the client, the case related to document content including emojis has been resolved. The client was informed that to preserve all content without data loss, they should use the emojis available within the application. This change was applied to the production and training environments.<br><br>
-                Please verify the released solution. If you need to report a different issue, please open a new ticket.</p>
-            <em>Attachment: Image file (98.53 KB)</em>
-        </div>
-
-    </div>
-
-    <div class="ticket-notes">
-        <strong>Internal Notes:</strong>
-        <ul>
-            <li>Note 1: Likely caused by emojis — escalate if confirmed.</li>
-            <li>Note 2: Same case as another related ticket.</li>
-        </ul>
-    </div>
-
 </div>
+
+<!-- TAB BAR -->
+<div class="topbar">
+    <div class="tab">Home</div>
+    <div class="tab active">Tickets</div>
+    <div class="tab">Live Chat</div>
+    <div class="tab">Knowledgebase</div>
+    <div class="tab">Troubleshooter</div>
+    <div class="tab">News</div>
+    <div class="tab">Users</div>
+    <div class="tab">Reports</div>
+</div>
+
+<div class="ticket-wrapper">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="staffnavbar">
+
+        <div class="navsub">
+            <div class="navtitle">Information</div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">TICKET ID</div>
+                <div class="ticketinfoitemlink">ZPH-445-83201</div>
+            </div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">USER</div>
+                <div class="ticketinfoitemcontent"><a href="#" style="color:#5a7faa">Grupo Zephyr</a></div>
+            </div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">ORGANIZATION</div>
+                <div class="ticketinfoitemcontent"><a href="#" style="color:#5a7faa">Zephyr Corporation</a></div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">GROUP</div>
+                <div class="ticketinfoitemcontent">Nacionales</div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Participants</div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">USER</div>
+                <div class="ticketinfoitemcontent">Grupo Zephyr</div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">STAFF</div>
+                <div class="ticketinfoitemcontent">Soporte Funcional</div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">STAFF</div>
+                <div class="ticketinfoitemcontent">Alejandro Garcia</div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Quick Filter</div>
+            <div style="padding:6px 8px;font-size:11px;">
+                <div><a href="#" style="color:#5a7faa">Inbox (780)</a></div>
+                <div><a href="#" style="color:#5a7faa">My Tickets (14)</a></div>
+                <div><a href="#" style="color:#5a7faa">Unassigned (8)</a></div>
+                <div style="margin-top:6px;font-weight:bold;color:#8a3030"><a href="#" style="color:#8a3030">Atn. Nivel 3 (Desarrollo) (15)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#5a7faa">Open (6)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#888">In Progress (5)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#888">Completed (7,355)</a></div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Online Staff</div>
+            <div style="padding:6px 8px;font-size:11px;color:#555;">
+                <div>● Soporte Nivel III (2)</div>
+                <div>● Esteban García (2)</div>
+                <div>● Luis Fernando Angulo</div>
+                <div>● Alejandro Garcia</div>
+                <div>● Jhon Alvaro Londoño</div>
+                <div>● Soporte Funcional (2)</div>
+                <div>● Líderes Técnicos (2)</div>
+            </div>
+        </div>
+
+    </div><!-- /staffnavbar -->
+
+    <!-- MAIN CONTENT -->
+    <div class="cpuicontainer">
+
+        <!-- TICKET TABS NAV -->
+        <ul class="ui-tabs-nav" id="View_Tickettabs">
+            <li class="ui-state-active ui-tabs-selected"><a href="#View_Ticket_tab_general">General</a></li>
+            <li><a href="#View_Ticket_tab_reply">Reply</a></li>
+            <li><a href="#ui-tabs-1">Forward</a></li>
+            <li><a href="#ui-tabs-2">Follow-Up</a></li>
+            <li><a href="#ui-tabs-3">Billing</a></li>
+            <li><a href="#ui-tabs-4">Release</a></li>
+            <li><a href="#ui-tabs-5">Chats</a></li>
+            <li><a href="#ui-tabs-6">Calls</a></li>
+            <li><span class="notecounterred">58</span><a href="#ui-tabs-7">History</a></li>
+            <li><a href="#ui-tabs-8">Audit Log</a></li>
+            <li><a href="#ui-tabs-9">Edit</a></li>
+        </ul>
+
+        <!-- GENERAL TAB CONTENT -->
+        <div id="View_Ticket_tab_general">
+
+            <!-- Toolbar -->
+            <div class="tabtoolbar">
+                <div class="tabtoolbarsub">
+                    <ul>
+                        <li><a href="#">✔ Update</a></li>
+                        <li><a href="#">📝 Add Note</a></li>
+                        <li><a href="#">👤 Take</a></li>
+                        <li><a href="#">📤 Dispatch</a></li>
+                        <li><a href="#">🖨 Print</a></li>
+                        <li><a href="#">👁 Watch</a></li>
+                        <li><a href="#">🚩 Flag</a></li>
+                        <li><a href="#">🚫 Spam</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Ticket Title -->
+            <div class="ticketgeneralcontainer">
+                <div>
+                    <div class="ticketgeneraldepartment"><a href="#">Atn. Nivel 3 (Desarrollo)</a></div>
+                    <div class="ticketgeneraltitle">ZEPHYR / Solicitud configuración Módulo Reportes</div>
+                </div>
+                <div class="ticketgeneralinfocontainer">Created: 06 April 2026 10:43 AM &nbsp;&nbsp;&nbsp;&nbsp; Updated: 10 April 2026 10:38 AM</div>
+            </div>
+
+            <!-- Properties Bar -->
+            <div class="ticketgeneralcontainer">
+                <div class="ticketgeneralproperties" id="generalticketproperties">
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">DEPARTMENT</div>
+                        <div class="ticketgeneralpropertiescontent">Atn. Nivel 3 (De...)</div>
+                        <select id="general_departmentid" name="gendepartmentid" style="width:140px;font-size:11px;">
+                            <option value="9" selected>Atn. Nivel 3 (Desarrollo)</option>
+                            <option value="4">Atn. Nivel 1 (Asesoria)</option>
+                            <option value="1">Atn. Nivel 2 (Tecnico)</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">OWNER</div>
+                        <div class="ticketgeneralpropertiescontent">Alejandro Garcia</div>
+                        <select id="selectgenownerstaffid" name="genownerstaffid" style="width:140px;font-size:11px;">
+                            <option value="44" selected>Alejandro Garcia</option>
+                            <option value="0">-- Unassigned --</option>
+                            <option value="15">Soporte Funcional</option>
+                            <option value="16">Soporte Nivel III</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">TYPE</div>
+                        <div class="ticketgeneralpropertiescontent">(Blanco)</div>
+                        <select id="selectgentickettypeid" name="gentickettypeid" style="width:140px;font-size:11px;">
+                            <option value="38" selected>(Blanco)</option>
+                            <option value="45">Fallos en configuración (CO)</option>
+                            <option value="46">Mensaje de error de PHP (PHP)</option>
+                            <option value="48">Mensaje de error en SQL (SQL)</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">STATUS</div>
+                        <div class="ticketgeneralpropertiescontent">Completed</div>
+                        <select id="selectgenticketstatusid" name="genticketstatusid" style="width:140px;font-size:11px;">
+                            <option value="53">Open</option>
+                            <option value="54">In Progress</option>
+                            <option value="55" selected>Completed</option>
+                            <option value="57">Closed</option>
+                            <option value="74">Waiting for reply</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject" id="generalpriorityproperties">
+                        <div class="ticketgeneralpropertiestitle">PRIORITY</div>
+                        <div class="ticketgeneralpropertiescontent">Media</div>
+                        <select id="general_ticketpriorityid" name="genticketpriorityid" style="width:140px;font-size:11px;">
+                            <option value="3">Alta</option>
+                            <option value="2" selected>Media</option>
+                            <option value="1">Baja</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Fields -->
+            <div class="customfieldstatic_pink">
+                <div class="customfieldstaticcontainer2">
+                    <div class="customfieldstatictitle">Detalles</div>
+                    <div class="customfieldstaticrule_pink"></div>
+                    <div class="customfieldstaticcontent">
+                        <table width="100%" border="0" cellpadding="6" cellspacing="0">
+                            <tr>
+                                <td class="customfieldcol1_pink" valign="top" width="25%">Módulos de Applima</td>
+                                <td class="customfieldcol2_pink" valign="top" width="25%">Reportes</td>
+                                <td class="customfieldcol1_pink" valign="top" width="25%">Versión del producto</td>
+                                <td class="customfieldcol2_pink" valign="top" width="25%">v4.12.310</td>
+                            </tr>
+                            <tr>
+                                <td class="customfieldcol1_pink" valign="top">Consultor</td>
+                                <td class="customfieldcol2_pink" valign="top">(Vacio)</td>
+                                <td class="customfieldcol1_pink" valign="top">Número Contacto Directo</td>
+                                <td class="customfieldcol2_pink" valign="top">3101234567</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Internal Notes -->
+            <div style="padding: 4px 12px;">
+
+                <!-- Note 1 -->
+                <div class="notebubble" id="note1">
+                    <blockquote>
+                        <p>creo que son los caracteres especiales (Unicode/non-ASCII), realiza la prueba; si es así, se escala.</p>
+                    </blockquote>
+                </div>
+                <cite class="notecite"><strong>Líderes Técnicos on 06 April 2026 10:54 AM</strong></cite>
+
+                <!-- Note 2 -->
+                <div class="notebubble" id="note2">
+                    <blockquote>
+                        <p>Mismo caso que el ticket<br>
+                            <a href="https://soporte.applo.com/staff/index.php?/Tickets/Ticket/View/75517/inbox/9/53/-1" target="_blank">https://soporte.applo.com/staff/index.php?/Tickets/Ticket/View/75517/inbox/9/53/-1</a><br><br>
+                            BM</p>
+                    </blockquote>
+                </div>
+                <cite class="notecite"><strong>Líderes Técnicos on 08 April 2026 05:45 PM</strong></cite>
+
+            </div>
+
+            <!-- TICKET POSTS -->
+            <div class="ticketpostsholder" id="ticketnotescontainerdiv">
+
+                <!-- Pagination top -->
+                <div class="ticketpostpaginationtoolbar">
+                    <div>
+                        <span class="gridhighlightpage">Page 1 of 1</span>
+                        <span class="gridnavpage"><a href="#">View All</a></span>
+                    </div>
+                    <div>
+                        <span class="gridnavpage"><a href="#">« Previous Ticket</a></span>
+                        <span class="gridnavpage"><a href="#">Next Ticket »</a></span>
+                    </div>
+                </div>
+
+                <!-- POST 1: User initial report -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Grupo Zephyr</div>
+                        <div class="ticketpostbarbadgeblue"><div class="tpbadgetext">User</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 10:43 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262187">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ScreenRecording_2026-04-06.mp4 (11.89 MB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Buen día,
+
+
+                                    El presente es para validar la funcionalidad al momento de generar o editar un reporte, dado que no está guardando correctamente la información suministrada cuando se incluyen caracteres especiales en los campos.
+
+
+                                    Quedo atenta, Gracias.
+
+
+
+                                    Sofia Ramos Torres
+                                    3101234567
+                                    Zephyr Corporation</div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: contact@zephyrcorp.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom">
+                        <div class="ticketpostbottomcontents">
+                            <a href="#"><img src="" alt="✏️"> </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 2: Staff acknowledgement -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Soporte Funcional</div>
+                        <div class="ticketpostbardesignation">Ingeniero de Soporte</div>
+                        <div class="ticketpostbarbadgered"><div class="tpbadgetext">Staff</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 10:45 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262188">
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Estimado/a cliente,
+
+                                    Acusamos recibo de su comunicación dirigida al Centro de Soporte Técnico de Applo Inc.
+
+                                    Por medio de la presente, le informamos que su solicitud ha sido debidamente registrada y asignada al departamento correspondiente para su gestión y resolución.
+
+                                    Una vez que se haya procesado su caso y se disponga de una solución, nuestro equipo se pondrá en contacto con usted para proporcionarle la información pertinente y los pasos a seguir.
+
+                                    Agradecemos su confianza en nuestros servicios. Si requiere información adicional, no dude en contactarnos.
+
+                                    Atentamente,
+
+
+                                    Natalia Valencia
+                                    Ingeniero de Soporte
+                                    Applo Inc.
+                                    Teléfono de contacto: +57 3009876543
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: nvalencia@applo.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- POST 3: Analysis report -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Alejandro Garcia</div>
+                        <div class="ticketpostbardesignation">Ingeniero de Soporte</div>
+                        <div class="ticketpostbarbadgered"><div class="tpbadgetext">Third Party</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 06:20 PM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262261">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ScreenRecording_2026-04-06.mp4 (9.14 MB)</a>
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">special-chars-reports(1).mp4 (15.63 MB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Cordial Saludo,
+
+                                    Se detalla el incidente identificado con el siguiente análisis:
+
+                                    CLIENTE: Zephyr (Cloud)
+
+                                    VERSIÓN: v4.12.310
+
+                                    MODULO: Reportes
+
+                                    ACTIVIDAD QUE ESTABA REALIZANDO: Generando un nuevo reporte con campos personalizados.
+
+                                    HALLAZGO: Se evidenció que si el contenido del reporte contiene caracteres especiales (símbolos Unicode, tildes extendidas, o caracteres no ASCII), la información configurada dentro del reporte se pierde al guardar, en cambio si se tiene solo texto plano la información se mantiene correctamente. Se adjunta evidencia para mayor entendimiento.
+
+                                    COMPORTAMIENTO ESPERADO: Que estos caracteres especiales se conserven dentro del reporte en cuestión, y que no se pierda la información configurada en el reporte.
+
+                                    Cordialmente,
+
+                                    Alejandro Garcia
+                                    Ingeniero de Soporte
+                                    Applo Inc.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Forwarded To: mlopez@applo.com &nbsp;&nbsp;&nbsp; Email: agarcia@applo.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- POST 4: User sends file -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Grupo Zephyr</div>
+                        <div class="ticketpostbarbadgeblue"><div class="tpbadgetext">User</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 07 April 2026 08:33 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262277">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ReporteConfiguración_backup209.docx (18.01 KB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Buen dia,
+
+                                    Adjunto lo solicitado.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: contact@zephyrcorp.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- POST 5: Resolution -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Alejandro Garcia</div>
+                        <div class="ticketpostbardesignation">Ingeniero de Soporte</div>
+                        <div class="ticketpostbarbadgered"><div class="tpbadgetext">Staff</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 10 April 2026 10:38 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262681">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">screenshot_solution_268.png (98.53 KB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Cordial saludo,
+
+                                    En llamada con el cliente 3101234567, se ha solucionado el caso relacionado con el contenido de los reportes que incluyen caracteres especiales, explicándole al cliente que para poder visualizar la totalidad del contenido sin pérdida de información se debe hacer uso únicamente de los caracteres soportados en Applima; este cambio se aplicó en las instancias de producción y entrenamiento.
+
+                                    Agradecemos verificar la solución liberada.
+
+                                    Recuerde que si desea reportar otra situación diferente a la registrada inicialmente, por favor abrirnos un nuevo ticket.
+
+                                    Cualquier inquietud puede comunicarse con nosotros al número 3201234567 (Bogotá).
+
+                                    Cordialmente,
+
+                                    Alejandro Garcia
+                                    Ingeniero de Soporte
+                                    Applo Inc.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: agarcia@applo.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- Pagination bottom -->
+                <div class="ticketpostpaginationtoolbar">
+                    <div>
+                        <span class="gridhighlightpage">Page 1 of 1</span>
+                        <span class="gridnavpage"><a href="#">View All</a></span>
+                    </div>
+                    <div>
+                        <span class="gridnavpage"><a href="#">« Previous Ticket</a></span>
+                        <span class="gridnavpage"><a href="#">Next Ticket »</a></span>
+                    </div>
+                </div>
+
+            </div><!-- /ticketpostsholder -->
+        </div><!-- /View_Ticket_tab_general -->
+
+    </div><!-- /cpuicontainer -->
+</div><!-- /ticket-wrapper -->
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>[#ZPH-445-83201]: ZEPHYR / Solicitud configuración Módulo Reportes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        /* Minimal styles to render ticket readable as standalone page */
+        body { font-family: Arial, sans-serif; background: #f5f0eb; margin: 0; padding: 0; }
+
+        /* Top bar */
+        .reheaderbar { background: #3a3a3a; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .rebarlogo a { color: #fff; font-weight: bold; font-size: 18px; text-decoration: none; letter-spacing: 1px; }
+        .cptopmenulink a { color: #ccc; font-size: 12px; text-decoration: none; }
+
+        /* Tab bar */
+        .topbar { background: #5a4e3a; padding: 4px 0; display: flex; gap: 2px; padding-left: 8px; }
+        .topbar .tab { padding: 6px 16px; background: #7a6a50; color: #fff; font-size: 12px; cursor: pointer; border-radius: 3px 3px 0 0; }
+        .topbar .tab.active { background: #c8a96e; color: #222; font-weight: bold; }
+
+        /* Ticket wrapper */
+        .ticket-wrapper { display: flex; gap: 0; min-height: calc(100vh - 80px); }
+
+        /* Left sidebar */
+        .staffnavbar { width: 200px; background: #f0e8d8; border-right: 1px solid #d0c4a8; padding: 8px 0; flex-shrink: 0; font-size: 11px; }
+        .navsub { margin-bottom: 12px; }
+        .navtitle { background: #c8b89a; color: #333; padding: 4px 8px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+        .ticketinfoitem { padding: 4px 8px; border-bottom: 1px solid #e0d4b8; }
+        .ticketinfoitemtitle { font-size: 9px; color: #888; text-transform: uppercase; font-weight: bold; }
+        .ticketinfoitemlink { color: #5a7faa; font-size: 11px; }
+        .ticketinfoitemcontent { color: #333; font-size: 11px; }
+        .ticketinfoitemtext { padding: 4px 8px; border-bottom: 1px solid #e0d4b8; }
+
+        /* Main content */
+        .cpuicontainer { flex: 1; padding: 0; background: #fff; }
+
+        /* Ticket header */
+        .ticketgeneralcontainer { padding: 8px 12px; }
+        .ticketgeneraldepartment a { color: #888; font-size: 11px; text-decoration: none; }
+        .ticketgeneraltitle { font-size: 16px; font-weight: bold; color: #333; margin: 4px 0; }
+        .ticketgeneralinfocontainer { font-size: 11px; color: #999; }
+
+        /* Properties bar */
+        .ticketgeneralproperties { background: #5f5f5f; padding: 6px 10px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+        .ticketgeneralpropertiesobject { padding: 4px 12px; color: #fff; }
+        .ticketgeneralpropertiestitle { font-size: 9px; color: #bbb; text-transform: uppercase; }
+        .ticketgeneralpropertiescontent { font-size: 12px; color: #fff; font-weight: bold; }
+        #generalpriorityproperties { background: #f0f018 !important; }
+        #generalpriorityproperties .ticketgeneralpropertiestitle { color: #555 !important; }
+        #generalpriorityproperties .ticketgeneralpropertiescontent { color: #222 !important; }
+        .ticketgeneralpropertiesdivider { color: #aaa; padding: 0 4px; }
+
+        /* Custom fields */
+        .customfieldstatic_pink { background: #fff0f4; border: 1px solid #f0c0cc; margin: 8px 12px; border-radius: 4px; }
+        .customfieldstaticcontainer2 { padding: 8px; }
+        .customfieldstatictitle { font-weight: bold; color: #c0405a; font-size: 12px; margin-bottom: 4px; }
+        .customfieldstaticrule_pink { border-top: 1px solid #f0c0cc; margin-bottom: 8px; }
+        .customfieldcol1_pink { background: #fce8ec; font-size: 11px; color: #555; font-weight: bold; }
+        .customfieldcol2_pink { background: #fff6f8; font-size: 11px; color: #333; }
+        table td { padding: 4px 6px; }
+
+        /* Notes */
+        .notebubble { background: #ffefbb; padding: 10px 14px; margin: 8px 12px; border-radius: 6px; border-left: 4px solid #f0c840; }
+        .notebubble blockquote { margin: 0; color: #555; font-size: 12px; font-style: italic; }
+        .notecite { font-size: 10px; color: #888; margin: 0 12px 8px; display: block; }
+
+        /* Toolbar */
+        .tabtoolbar { background: #e8e0d0; border-bottom: 1px solid #d0c4a8; }
+        .tabtoolbarsub ul { display: flex; list-style: none; margin: 0; padding: 4px 8px; gap: 2px; }
+        .tabtoolbarsub ul li a { display: flex; align-items: center; gap: 4px; padding: 4px 10px; background: #c8b89a; color: #333; text-decoration: none; font-size: 11px; border-radius: 3px; font-weight: bold; }
+        .tabtoolbarsub ul li a:hover { background: #b0a080; }
+
+        /* Tabs nav */
+        .ui-tabs-nav { list-style: none; margin: 0; padding: 4px 8px 0; display: flex; gap: 2px; background: #e8e0d0; border-bottom: 2px solid #c8b89a; }
+        .ui-tabs-nav li { padding: 6px 14px; background: #d8cdb8; border-radius: 4px 4px 0 0; cursor: pointer; font-size: 11px; color: #555; }
+        .ui-tabs-nav li.ui-state-active { background: #fff; color: #333; font-weight: bold; border-bottom: 2px solid #fff; margin-bottom: -2px; }
+        .notecounterred { display: inline-block; background: #c0203a; color: #fff; border-radius: 10px; font-size: 9px; padding: 1px 5px; margin-right: 4px; }
+
+        /* Ticket posts */
+        .ticketpostsholder { padding: 8px 12px; }
+        .ticketpostcontainer { margin-bottom: 16px; border: 1px solid #e0d8c8; border-radius: 6px; overflow: hidden; }
+        .ticketpostbar { background: #5a4e3a; padding: 6px 12px; display: flex; align-items: center; gap: 8px; }
+        .ticketpostbarname { color: #fff; font-weight: bold; font-size: 12px; }
+        .ticketpostbardesignation { color: #c8b89a; font-size: 10px; }
+        .ticketpostbarbadgeblue { background: #4a7ab0; border-radius: 3px; padding: 1px 6px; }
+        .ticketpostbarbadgered { background: #b03030; border-radius: 3px; padding: 1px 6px; }
+        .tpbadgetext { color: #fff; font-size: 9px; font-weight: bold; }
+        .ticketpostcontents { background: #fff; }
+        .ticketpostcontentsbar { background: #f5f0e8; padding: 4px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e0d0; }
+        .ticketbarcontents { font-size: 10px; color: #888; }
+        .ticketpostcontentsdetails { padding: 12px; }
+        .ticketpostcontentsattachments { margin-bottom: 8px; }
+        .ticketpostcontentsattachmentitem { display: inline-block; background: #f0e8d8; border: 1px solid #d0c4a8; border-radius: 3px; padding: 3px 8px; font-size: 11px; color: #5a7faa; text-decoration: none; margin-right: 6px; margin-bottom: 4px; }
+        .ticketpostcontentsdetailscontainer { font-size: 13px; color: #333; line-height: 1.6; white-space: pre-wrap; }
+        .ticketpostcontentsbottom { background: #f8f4ec; border-top: 1px solid #e8e0d0; padding: 4px 12px; font-size: 10px; color: #888; display: flex; justify-content: space-between; }
+        .ticketpostbarbottom { background: #f0e8d8; border-top: 1px solid #e0d8c8; padding: 4px 10px; text-align: right; }
+
+        /* Pagination */
+        .ticketpostpaginationtoolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; }
+        .gridhighlightpage, .gridnavpage { padding: 3px 8px; background: #e8e0d0; border-radius: 3px; margin-right: 4px; }
+        .gridnavpage a { color: #5a7faa; text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .ticket-wrapper { flex-direction: column; }
+            .staffnavbar { width: 100%; border-right: none; border-bottom: 1px solid #d0c4a8; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP HEADER BAR -->
+<div class="reheaderbar">
+    <div class="rebarlogo">
+        <a href="https://soporte.applo.com/staff/index.php?/Base/Dashboard/Index">APPLO Support</a>
+    </div>
+    <div class="cptopmenulink">
+        <a href="https://soporte.applo.com/" target="_blank">Support Center</a>
+    </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="topbar">
+    <div class="tab">Home</div>
+    <div class="tab active">Tickets</div>
+    <div class="tab">Live Chat</div>
+    <div class="tab">Knowledgebase</div>
+    <div class="tab">Troubleshooter</div>
+    <div class="tab">News</div>
+    <div class="tab">Users</div>
+    <div class="tab">Reports</div>
+</div>
+
+<div class="ticket-wrapper">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="staffnavbar">
+
+        <div class="navsub">
+            <div class="navtitle">Information</div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">TICKET ID</div>
+                <div class="ticketinfoitemlink">ZPH-445-83201</div>
+            </div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">USER</div>
+                <div class="ticketinfoitemcontent"><a href="#" style="color:#5a7faa">Grupo Zephyr</a></div>
+            </div>
+            <div class="ticketinfoitem">
+                <div class="ticketinfoitemtitle">ORGANIZATION</div>
+                <div class="ticketinfoitemcontent"><a href="#" style="color:#5a7faa">Zephyr Corporation</a></div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">GROUP</div>
+                <div class="ticketinfoitemcontent">Nacionales</div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Participants</div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">USER</div>
+                <div class="ticketinfoitemcontent">Grupo Zephyr</div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">STAFF</div>
+                <div class="ticketinfoitemcontent">Soporte Funcional</div>
+            </div>
+            <div class="ticketinfoitemtext">
+                <div class="ticketinfoitemtitle">STAFF</div>
+                <div class="ticketinfoitemcontent">Alejandro Garcia</div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Quick Filter</div>
+            <div style="padding:6px 8px;font-size:11px;">
+                <div><a href="#" style="color:#5a7faa">Inbox (780)</a></div>
+                <div><a href="#" style="color:#5a7faa">My Tickets (14)</a></div>
+                <div><a href="#" style="color:#5a7faa">Unassigned (8)</a></div>
+                <div style="margin-top:6px;font-weight:bold;color:#8a3030"><a href="#" style="color:#8a3030">Atn. Nivel 3 (Desarrollo) (15)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#5a7faa">Open (6)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#888">In Progress (5)</a></div>
+                <div style="padding-left:8px"><a href="#" style="color:#888">Completed (7,355)</a></div>
+            </div>
+        </div>
+
+        <div class="navsub">
+            <div class="navtitle">Online Staff</div>
+            <div style="padding:6px 8px;font-size:11px;color:#555;">
+                <div>● Soporte Nivel III (2)</div>
+                <div>● Esteban García (2)</div>
+                <div>● Luis Fernando Angulo</div>
+                <div>● Alejandro Garcia</div>
+                <div>● Jhon Alvaro Londoño</div>
+                <div>● Soporte Funcional (2)</div>
+                <div>● Líderes Técnicos (2)</div>
+            </div>
+        </div>
+
+    </div><!-- /staffnavbar -->
+
+    <!-- MAIN CONTENT -->
+    <div class="cpuicontainer">
+
+        <!-- TICKET TABS NAV -->
+        <ul class="ui-tabs-nav" id="View_Tickettabs">
+            <li class="ui-state-active ui-tabs-selected"><a href="#View_Ticket_tab_general">General</a></li>
+            <li><a href="#View_Ticket_tab_reply">Reply</a></li>
+            <li><a href="#ui-tabs-1">Forward</a></li>
+            <li><a href="#ui-tabs-2">Follow-Up</a></li>
+            <li><a href="#ui-tabs-3">Billing</a></li>
+            <li><a href="#ui-tabs-4">Release</a></li>
+            <li><a href="#ui-tabs-5">Chats</a></li>
+            <li><a href="#ui-tabs-6">Calls</a></li>
+            <li><span class="notecounterred">58</span><a href="#ui-tabs-7">History</a></li>
+            <li><a href="#ui-tabs-8">Audit Log</a></li>
+            <li><a href="#ui-tabs-9">Edit</a></li>
+        </ul>
+
+        <!-- GENERAL TAB CONTENT -->
+        <div id="View_Ticket_tab_general">
+
+            <!-- Toolbar -->
+            <div class="tabtoolbar">
+                <div class="tabtoolbarsub">
+                    <ul>
+                        <li><a href="#">✔ Update</a></li>
+                        <li><a href="#">📝 Add Note</a></li>
+                        <li><a href="#">👤 Take</a></li>
+                        <li><a href="#">📤 Dispatch</a></li>
+                        <li><a href="#">🖨 Print</a></li>
+                        <li><a href="#">👁 Watch</a></li>
+                        <li><a href="#">🚩 Flag</a></li>
+                        <li><a href="#">🚫 Spam</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Ticket Title -->
+            <div class="ticketgeneralcontainer">
+                <div>
+                    <div class="ticketgeneraldepartment"><a href="#">Atn. Nivel 3 (Desarrollo)</a></div>
+                    <div class="ticketgeneraltitle">ZEPHYR / Solicitud configuración Módulo Reportes</div>
+                </div>
+                <div class="ticketgeneralinfocontainer">Created: 06 April 2026 10:43 AM &nbsp;&nbsp;&nbsp;&nbsp; Updated: 10 April 2026 10:38 AM</div>
+            </div>
+
+            <!-- Properties Bar -->
+            <div class="ticketgeneralcontainer">
+                <div class="ticketgeneralproperties" id="generalticketproperties">
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">DEPARTMENT</div>
+                        <div class="ticketgeneralpropertiescontent">Atn. Nivel 3 (De...)</div>
+                        <select id="general_departmentid" name="gendepartmentid" style="width:140px;font-size:11px;">
+                            <option value="9" selected>Atn. Nivel 3 (Desarrollo)</option>
+                            <option value="4">Atn. Nivel 1 (Asesoria)</option>
+                            <option value="1">Atn. Nivel 2 (Tecnico)</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">OWNER</div>
+                        <div class="ticketgeneralpropertiescontent">Alejandro Garcia</div>
+                        <select id="selectgenownerstaffid" name="genownerstaffid" style="width:140px;font-size:11px;">
+                            <option value="44" selected>Alejandro Garcia</option>
+                            <option value="0">-- Unassigned --</option>
+                            <option value="15">Soporte Funcional</option>
+                            <option value="16">Soporte Nivel III</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">TYPE</div>
+                        <div class="ticketgeneralpropertiescontent">(Blanco)</div>
+                        <select id="selectgentickettypeid" name="gentickettypeid" style="width:140px;font-size:11px;">
+                            <option value="38" selected>(Blanco)</option>
+                            <option value="45">Fallos en configuración (CO)</option>
+                            <option value="46">Mensaje de error de PHP (PHP)</option>
+                            <option value="48">Mensaje de error en SQL (SQL)</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject">
+                        <div class="ticketgeneralpropertiestitle">STATUS</div>
+                        <div class="ticketgeneralpropertiescontent">Completed</div>
+                        <select id="selectgenticketstatusid" name="genticketstatusid" style="width:140px;font-size:11px;">
+                            <option value="53">Open</option>
+                            <option value="54">In Progress</option>
+                            <option value="55" selected>Completed</option>
+                            <option value="57">Closed</option>
+                            <option value="74">Waiting for reply</option>
+                        </select>
+                    </div>
+                    <div class="ticketgeneralpropertiesdivider">|</div>
+                    <div class="ticketgeneralpropertiesobject" id="generalpriorityproperties">
+                        <div class="ticketgeneralpropertiestitle">PRIORITY</div>
+                        <div class="ticketgeneralpropertiescontent">Media</div>
+                        <select id="general_ticketpriorityid" name="genticketpriorityid" style="width:140px;font-size:11px;">
+                            <option value="3">Alta</option>
+                            <option value="2" selected>Media</option>
+                            <option value="1">Baja</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Fields -->
+            <div class="customfieldstatic_pink">
+                <div class="customfieldstaticcontainer2">
+                    <div class="customfieldstatictitle">Detalles</div>
+                    <div class="customfieldstaticrule_pink"></div>
+                    <div class="customfieldstaticcontent">
+                        <table width="100%" border="0" cellpadding="6" cellspacing="0">
+                            <tr>
+                                <td class="customfieldcol1_pink" valign="top" width="25%">Módulos de Applima</td>
+                                <td class="customfieldcol2_pink" valign="top" width="25%">Reportes</td>
+                                <td class="customfieldcol1_pink" valign="top" width="25%">Versión del producto</td>
+                                <td class="customfieldcol2_pink" valign="top" width="25%">v4.12.310</td>
+                            </tr>
+                            <tr>
+                                <td class="customfieldcol1_pink" valign="top">Consultor</td>
+                                <td class="customfieldcol2_pink" valign="top">(Vacio)</td>
+                                <td class="customfieldcol1_pink" valign="top">Número Contacto Directo</td>
+                                <td class="customfieldcol2_pink" valign="top">3101234567</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Internal Notes -->
+            <div style="padding: 4px 12px;">
+
+                <!-- Note 1 -->
+                <div class="notebubble" id="note1">
+                    <blockquote>
+                        <p>creo que son los caracteres especiales (Unicode/non-ASCII), realiza la prueba; si es así, se escala.</p>
+                    </blockquote>
+                </div>
+                <cite class="notecite"><strong>Líderes Técnicos on 06 April 2026 10:54 AM</strong></cite>
+
+                <!-- Note 2 -->
+                <div class="notebubble" id="note2">
+                    <blockquote>
+                        <p>Mismo caso que el ticket<br>
+                            <a href="https://soporte.applo.com/staff/index.php?/Tickets/Ticket/View/75517/inbox/9/53/-1" target="_blank">https://soporte.applo.com/staff/index.php?/Tickets/Ticket/View/75517/inbox/9/53/-1</a><br><br>
+                            BM</p>
+                    </blockquote>
+                </div>
+                <cite class="notecite"><strong>Líderes Técnicos on 08 April 2026 05:45 PM</strong></cite>
+
+            </div>
+
+            <!-- TICKET POSTS -->
+            <div class="ticketpostsholder" id="ticketnotescontainerdiv">
+
+                <!-- Pagination top -->
+                <div class="ticketpostpaginationtoolbar">
+                    <div>
+                        <span class="gridhighlightpage">Page 1 of 1</span>
+                        <span class="gridnavpage"><a href="#">View All</a></span>
+                    </div>
+                    <div>
+                        <span class="gridnavpage"><a href="#">« Previous Ticket</a></span>
+                        <span class="gridnavpage"><a href="#">Next Ticket »</a></span>
+                    </div>
+                </div>
+
+                <!-- POST 1: User initial report -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Grupo Zephyr</div>
+                        <div class="ticketpostbarbadgeblue"><div class="tpbadgetext">User</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 10:43 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262187">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ScreenRecording_2026-04-06.mp4 (11.89 MB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Buen día,
+
+
+                                    El presente es para validar la funcionalidad al momento de generar o editar un reporte, dado que no está guardando correctamente la información suministrada cuando se incluyen caracteres especiales en los campos.
+
+
+                                    Quedo atenta, Gracias.
+
+
+
+                                    Sofia Ramos Torres
+                                    3101234567
+                                    Zephyr Corporation</div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: contact@zephyrcorp.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom">
+                        <div class="ticketpostbottomcontents">
+                            <a href="#"><img src="" alt="✏️"> </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 2: Staff acknowledgement -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Soporte Funcional</div>
+                        <div class="ticketpostbardesignation">Ingeniero de Soporte</div>
+                        <div class="ticketpostbarbadgered"><div class="tpbadgetext">Staff</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 10:45 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262188">
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Estimado/a cliente,
+
+                                    Acusamos recibo de su comunicación dirigida al Centro de Soporte Técnico de Applo Inc.
+
+                                    Por medio de la presente, le informamos que su solicitud ha sido debidamente registrada y asignada al departamento correspondiente para su gestión y resolución.
+
+                                    Una vez que se haya procesado su caso y se disponga de una solución, nuestro equipo se pondrá en contacto con usted para proporcionarle la información pertinente y los pasos a seguir.
+
+                                    Agradecemos su confianza en nuestros servicios. Si requiere información adicional, no dude en contactarnos.
+
+                                    Atentamente,
+
+
+                                    Natalia Valencia
+                                    Ingeniero de Soporte
+                                    Applo Inc.
+                                    Teléfono de contacto: +57 3009876543
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: nvalencia@applo.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- POST 3: Analysis report -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Alejandro Garcia</div>
+                        <div class="ticketpostbardesignation">Ingeniero de Soporte</div>
+                        <div class="ticketpostbarbadgered"><div class="tpbadgetext">Third Party</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 06 April 2026 06:20 PM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262261">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ScreenRecording_2026-04-06.mp4 (9.14 MB)</a>
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">special-chars-reports(1).mp4 (15.63 MB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Cordial Saludo,
+
+                                    Se detalla el incidente identificado con el siguiente análisis:
+
+                                    CLIENTE: Zephyr (Cloud)
+
+                                    VERSIÓN: v4.12.310
+
+                                    MODULO: Reportes
+
+                                    ACTIVIDAD QUE ESTABA REALIZANDO: Generando un nuevo reporte con campos personalizados.
+
+                                    HALLAZGO: Se evidenció que si el contenido del reporte contiene caracteres especiales (símbolos Unicode, tildes extendidas, o caracteres no ASCII), la información configurada dentro del reporte se pierde al guardar, en cambio si se tiene solo texto plano la información se mantiene correctamente. Se adjunta evidencia para mayor entendimiento.
+
+                                    COMPORTAMIENTO ESPERADO: Que estos caracteres especiales se conserven dentro del reporte en cuestión, y que no se pierda la información configurada en el reporte.
+
+                                    Cordialmente,
+
+                                    Alejandro Garcia
+                                    Ingeniero de Soporte
+                                    Applo Inc.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Forwarded To: mlopez@applo.com &nbsp;&nbsp;&nbsp; Email: agarcia@applo.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+                <!-- POST 4: User sends file -->
+                <div class="ticketpostcontainer">
+                    <div class="ticketpostbar">
+                        <div class="ticketpostbarname">Grupo Zephyr</div>
+                        <div class="ticketpostbarbadgeblue"><div class="tpbadgetext">User</div></div>
+                    </div>
+                    <div class="ticketpostcontents">
+                        <div class="ticketpostcontentsbar">
+                            <div></div>
+                            <div class="ticketbarcontents">Posted on: 07 April 2026 08:33 AM</div>
+                        </div>
+                        <div class="ticketpostcontentsdetails" id="ticketpostcontentsdetails_262277">
+                            <div class="ticketpostcontentsattachments">
+                                <a class="ticketpostcontentsattachmentitem" href="#" target="_blank">ReporteConfiguración_backup209.docx (18.01 KB)</a>
+                            </div>
+                            <div class="ticketpostcontentsholder">
+                                <div class="ticketpostcontentsdetailscontainer">Buen dia,
+
+                                    Adjunto lo solicitado.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticketpostcontentsbottom">
+                            <div class="ticketpostbottomcontents">Email: contact@zephyrcorp.com</div>
+                            <span class="ticketpostbottomright">IP Address: 172.17.0.1</span>
+                        </div>
+                    </div>
+                    <div class="ticketpostbarbottom"></div>
+                </div>
+
+
+                <!-- Pagination bottom -->
+                <div class="ticketpostpaginationtoolbar">
+                    <div>
+                        <span class="gridhighlightpage">Page 1 of 1</span>
+                        <span class="gridnavpage"><a href="#">View All</a></span>
+                    </div>
+                    <div>
+                        <span class="gridnavpage"><a href="#">« Previous Ticket</a></span>
+                        <span class="gridnavpage"><a href="#">Next Ticket »</a></span>
+                    </div>
+                </div>
+
+            </div><!-- /ticketpostsholder -->
+        </div><!-- /View_Ticket_tab_general -->
+
+    </div><!-- /cpuicontainer -->
+</div><!-- /ticket-wrapper -->
+
 </body>
 </html>

@@ -97,3 +97,54 @@ chrome.runtime.onMessage.addListener((message) => {
         showFinalResult(message.payload);
     }
 });
+
+function extractTicketData() {
+    const blocks = document.querySelectorAll('.ticketpostcontentsdetailscontainer');
+
+    if (!blocks.length) return null;
+
+    // 🔥 Find LAST block that contains CLIENTE
+    let target = null;
+
+    for (let i = blocks.length - 1; i >= 0; i--) {
+        const text = blocks[i].innerText;
+
+        if (text.includes("CLIENTE:")) {
+            target = text;
+            break;
+        }
+    }
+
+    if (!target) return null;
+
+    // 🧠 Helper to extract fields
+    function getField(label, text) {
+        const regex = new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n[A-ZÁÉÍÓÚ ]+:|$)`, 'i');
+        const match = text.match(regex);
+        return match ? match[1].trim() : "N/A";
+    }
+
+    return {
+        raw: target,
+        client: getField("CLIENTE", target),
+        version: getField("VERSIÓN", target),
+        module: getField("MODULO", target),
+        activity: getField("ACTIVIDAD QUE ESTABA REALIZANDO", target),
+        hallazgo: getField("HALLAZGO", target),
+        expected: getField("COMPORTAMIENTO ESPERADO", target)
+    };
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "EXTRACT_DATA") {
+        const data = extractTicketData();
+
+        console.log("EXTRACTED:", data);
+
+        sendResponse(data);
+    }
+
+    if (msg.type === "PING") {
+        sendResponse({ ok: true });
+    }
+});

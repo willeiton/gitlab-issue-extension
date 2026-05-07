@@ -6,12 +6,16 @@ chrome.action.onClicked.addListener(async (tab) => {
     try {
         if (!tab.id) throw new Error("No tab ID");
 
-        if (tab.url.startsWith("chrome://") || tab.url.startsWith("brave://")) {
+        if (
+            tab.url.startsWith("chrome://") ||
+            tab.url.startsWith("brave://")
+        ) {
             return;
         }
 
         // Ensure content script
         let isLoaded = false;
+
         try {
             await chrome.tabs.sendMessage(tab.id, { type: "PING" });
             isLoaded = true;
@@ -30,7 +34,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             "Creating GitLab issue"
         ];
 
-        // INIT
+        // INIT UI
         chrome.tabs.sendMessage(tab.id, {
             type: "INIT_STEPS",
             payload: steps
@@ -40,21 +44,49 @@ chrome.action.onClicked.addListener(async (tab) => {
         // STEP 1 — Extracting
         // -------------------------
         await updateStep(tab.id, steps[0], "active");
+        const extractedData = await chrome.tabs.sendMessage(tab.id, {
+            type: "EXTRACT_DATA"
+        });
 
-        // (fake for now)
-        const extractedData = {
-            title: "Test title",
-            url: tab.url,
-            content: "User reported something is broken"
-        };
-        await sleep(500);
+        if (!extractedData) {
+            throw new Error("No ticket data found");
+        }
+
         await updateStep(tab.id, steps[0], "done");
 
         // -------------------------
         // STEP 2 — AI Formatting
         // -------------------------
         await updateStep(tab.id, steps[1], "active");
-        const aiDescription = await formatWithGemini(extractedData);
+        const aiInput = {
+            title: extractedData.module || "Sin módulo",
+            url: tab.url,
+            content: `
+CLIENTE: ${extractedData.client}
+VERSIÓN: ${extractedData.version}
+MODULO: ${extractedData.module}
+ACTIVIDAD: ${extractedData.activity}
+HALLAZGO: ${extractedData.hallazgo}
+COMPORTAMIENTO ESPERADO: ${extractedData.expected}
+`
+        };
+
+        const aiRaw = await formatWithGemini(aiInput);
+
+        console.log("AI RAW:", aiRaw);
+
+        if (
+            !aiRaw.includes("TITLE:") ||
+            !aiRaw.includes("DESCRIPTION:")
+        ) {
+            throw new Error("AI format invalid");
+        }
+
+        const { title, description } = parseAIResponse(aiRaw);
+
+        console.log("PARSED TITLE:", title);
+        console.log("PARSED DESCRIPTION:", description);
+
         await updateStep(tab.id, steps[1], "done");
 
         // -------------------------
@@ -63,8 +95,8 @@ chrome.action.onClicked.addListener(async (tab) => {
         await updateStep(tab.id, steps[2], "active");
 
         const issue = await createGitlabIssue({
-            title: extractedData.title,
-            description: aiDescription
+            title,
+            description
         });
 
         await updateStep(tab.id, steps[2], "done");
@@ -87,11 +119,6 @@ chrome.action.onClicked.addListener(async (tab) => {
     }
 });
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
 async function createGitlabIssue({ title, description }) {
     const {
         gitlabToken,
@@ -108,22 +135,25 @@ async function createGitlabIssue({ title, description }) {
 
     const allLabels = [...labels, severity].join(",");
 
-    const response = await fetch(`${baseUrl}/projects/${projectId}/issues`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "PRIVATE-TOKEN": gitlabToken
-        },
-        body: JSON.stringify({
-            title,
-            description,
-            assignee_ids: [userId],
-            milestone_id: milestoneId,
-            labels: allLabels,
-            due_date: dueDate,
-            time_estimate: estimateHours * 3600
-        })
-    });
+    const response = await fetch(
+        `${baseUrl}/projects/${projectId}/issues`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "PRIVATE-TOKEN": gitlabToken
+            },
+            body: JSON.stringify({
+                title,
+                description,
+                assignee_ids: [userId],
+                milestone_id: milestoneId,
+                labels: allLabels,
+                due_date: dueDate,
+                time_estimate: estimateHours * 3600
+            })
+        }
+    );
 
     if (!response.ok) {
         const errorText = await response.text();
@@ -144,30 +174,41 @@ async function formatWithGemini({ title, url, content }) {
     const { GEMINI_API_KEY } = await getConfig();
 
     const prompt = `
-You are a system that generates GitLab issues.
+You are generating a GitLab issue from a support ticket.
 
-Follow this EXACT structure:
+Return EXACTLY in this format:
 
-## Context
-...
+TITLE:
+[MODULE] – [Concise technical description of the issue]
 
-## Description
-...
+DESCRIPTION:
+#### Cliente
+> {CLIENT_NAME or TIQAL}
 
-## Steps to reproduce
-...
+#### Módulo
+> {MODULE_NAME}
 
-## Expected behavior
-...
+#### Hallazgo
+> {CLEAR STRUCTURED DESCRIPTION}
+>
+> Use bullet points if needed
 
-## Actual behavior
-...
+#### Comportamiento esperado
+> {EXPECTED BEHAVIOR}
+
+#### Referencias
+[{TICKET_CODE}]({TICKET_URL})
+
+#### Evidencia
+> {EVIDENCE OR "N.A."}
+> {EVIDENCE_URL if exists}
 
 Rules:
-- Return ONLY the formatted issue
+- Do NOT omit sections
+- Do NOT add text in the evidence section. Text is not allowed in evidence section
 - Do NOT add explanations
-- Do NOT skip sections
-- Use "N/A" if missing
+- Do NOT add extra text outside TITLE and DESCRIPTION
+- Keep strict formatting
 
 DATA:
 Title: ${title}
@@ -186,7 +227,11 @@ Content: ${content}
                 contents: [
                     {
                         role: "user",
-                        parts: [{ text: prompt }]
+                        parts: [
+                            {
+                                text: prompt
+                            }
+                        ]
                     }
                 ]
             })
@@ -200,7 +245,29 @@ Content: ${content}
 
     const data = await response.json();
 
-    console.log("Gemini raw:", data);
+    console.log("GEMINI RAW RESPONSE:", data);
 
     return data.candidates?.[0]?.content?.parts?.[0]?.text || "N/A";
+}
+
+function parseAIResponse(text) {
+    const titleStart = text.indexOf("TITLE:");
+    const descriptionStart = text.indexOf("DESCRIPTION:");
+
+    if (titleStart === -1 || descriptionStart === -1) {
+        throw new Error("Invalid AI response structure");
+    }
+
+    const title = text
+        .substring(titleStart + 6, descriptionStart)
+        .trim();
+
+    const description = text
+        .substring(descriptionStart + 12)
+        .trim();
+
+    return {
+        title,
+        description
+    };
 }

@@ -10,6 +10,8 @@ export async function getConfig() {
         milestoneId: ENV.GITLAB_MILESTONE_ID,
         labels: ENV.GITLAB_DEFAULT_LABELS,
         severity: ENV.GITLAB_SEVERITY,
-        estimateHours: ENV.GITLAB_ESTIMATE_HOURS
+        estimateHours: ENV.GITLAB_ESTIMATE_HOURS,
+        environment: ENV.ENVIRONMENT,
+        allowedDomain: ENV.ALLOWED_DOMAIN
     };
 }

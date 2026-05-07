@@ -6,6 +6,21 @@ chrome.action.onClicked.addListener(async (tab) => {
     try {
         if (!tab.id) throw new Error("No tab ID");
 
+        const {
+            environment,
+            allowedDomain
+        } = await getConfig();
+
+        if (environment && environment === "production") {
+            const isAllowed = tab.url.startsWith(`https://${allowedDomain}`);
+
+            if (!isAllowed) {
+                console.warn("Blocked domain:", tab.url);
+
+                return;
+            }
+        }
+
         if (
             tab.url.startsWith("chrome://") ||
             tab.url.startsWith("brave://")

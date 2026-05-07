@@ -124,8 +124,17 @@ function extractTicketData() {
         return match ? match[1].trim() : "N/A";
     }
 
+    const ticketElement = document.querySelector(
+        '#itemoptionsnav > div > div:nth-child(2) > div.ticketinfoitemlink'
+    );
+
+    const ticketCode = ticketElement
+        ? ticketElement.innerText.trim()
+        : "N/A";
+
     return {
         raw: target,
+        ticketCode,
         client: getField("CLIENTE", target),
         version: getField("VERSIÓN", target),
         module: getField("MODULO", target),

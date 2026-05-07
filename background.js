@@ -62,6 +62,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             title: extractedData.module || "Sin módulo",
             url: tab.url,
             content: `
+            TICKET: ${extractedData.ticketCode}
 CLIENTE: ${extractedData.client}
 VERSIÓN: ${extractedData.version}
 MODULO: ${extractedData.module}
@@ -204,6 +205,8 @@ DESCRIPTION:
 > {EVIDENCE_URL if exists}
 
 Rules:
+- Use the provided TICKET field as TICKET_CODE.
+- Use the provided URL as TICKET_URL.
 - Do NOT omit sections
 - Do NOT add text in the evidence section. Text is not allowed in evidence section
 - Do NOT add explanations

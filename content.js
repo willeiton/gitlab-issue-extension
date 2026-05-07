@@ -128,9 +128,23 @@ function extractTicketData() {
         '#itemoptionsnav > div > div:nth-child(2) > div.ticketinfoitemlink'
     );
 
-    const ticketCode = ticketElement
-        ? ticketElement.innerText.trim()
-        : "N/A";
+    const ticketContainer = document.querySelector('#itemoptionsnav');
+
+    let ticketCode = "N/A";
+
+    if (ticketContainer) {
+        const links = ticketContainer.querySelectorAll('.ticketinfoitemlink');
+
+        for (const link of links) {
+            const text = link.innerText.trim();
+
+            // Example: OFT-392-22656
+            if (/^[A-Z]+-\d+-\d+$/i.test(text)) {
+                ticketCode = text;
+                break;
+            }
+        }
+    }
 
     return {
         raw: target,

@@ -204,6 +204,9 @@ DESCRIPTION:
 #### Evidencia
 > {EVIDENCE_URL or "N.A."}
 
+#### Base de datos
+> {DATABASE_URL or "N.A."}
+
 Rules:
 - Use the provided TICKET field as TICKET_CODE.
 - Use the provided URL as TICKET_URL.
@@ -225,6 +228,29 @@ Rules:
 
 - Evidence links MUST remain exclusively inside the Evidencia section.
 - Database links must NOT be placed inside Evidencia.
+- If a link is identified as a database reference, backup, DB access, SharePoint DB file, or explicitly labeled as:
+  - DB
+  - Base de datos
+  - Database
+
+  then place it EXCLUSIVELY inside the "Base de datos" section.
+
+- Database links must NEVER be placed inside Evidencia.
+
+- SharePoint links are NOT automatically evidence links.
+  Their meaning depends on surrounding context.
+
+- If a SharePoint link is associated with:
+  - DB
+  - Base de datos
+  - backup
+  - dump
+  - database
+
+  then classify it as a database link.
+
+- If no database link exists, use:
+> N.A.
 - Do NOT duplicate links between sections.
 - Do NOT invent links.
 - Do NOT omit sections.

@@ -204,6 +204,20 @@ Rules:
 - Do NOT add explanatory text inside Evidencia.
 - If no evidence link is clearly identified, use:
 > N.A.
+- The Referencias section must ALWAYS contain the support ticket reference using:
+[{TICKET_CODE}]({TICKET_URL})
+
+- If additional links are found in the RAW CONTENT and they are NOT identified as:
+  - database links
+  - evidence links
+
+  then include them inside the Referencias section as additional markdown links.
+
+- Evidence links MUST remain exclusively inside the Evidencia section.
+
+- Database links must NOT be placed inside Evidencia.
+
+- Do NOT duplicate links between sections.
 - Do NOT invent links.
 - Do NOT omit sections.
 - Do NOT add explanations.

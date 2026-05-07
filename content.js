@@ -109,7 +109,21 @@ function extractTicketData() {
     for (let i = blocks.length - 1; i >= 0; i--) {
         const text = blocks[i].innerText;
 
-        if (text.includes("CLIENTE:")) {
+        const hasCliente = text.includes("CLIENTE:");
+
+        const requiredFields = [
+            "VERSIÓN:",
+            "MODULO:",
+            "ACTIVIDAD QUE ESTABA REALIZANDO:",
+            "HALLAZGO:",
+            "COMPORTAMIENTO ESPERADO:"
+        ];
+
+        const hasAnyRequiredField = requiredFields.some(field =>
+            text.includes(field)
+        );
+
+        if (hasCliente && hasAnyRequiredField) {
             target = text;
             break;
         }

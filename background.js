@@ -166,6 +166,15 @@ async function updateStep(tabId, step, status) {
 async function formatWithGemini({ ticketCode, url, raw }) {
     const { GEMINI_API_KEY } = await getConfig();
 
+    const GEMINI_MODELS = [
+        "gemini-2.0-flash-lite",
+        "gemini-2.0-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-2.5-flash"
+    ];
+
+    let lastError = null;
+
     const prompt = `
 You are generating a GitLab issue from a support ticket.
 
@@ -204,6 +213,7 @@ Rules:
 - Do NOT add explanatory text inside Evidencia.
 - If no evidence link is clearly identified, use:
 > N.A.
+
 - The Referencias section must ALWAYS contain the support ticket reference using:
 [{TICKET_CODE}]({TICKET_URL})
 
@@ -214,9 +224,7 @@ Rules:
   then include them inside the Referencias section as additional markdown links.
 
 - Evidence links MUST remain exclusively inside the Evidencia section.
-
 - Database links must NOT be placed inside Evidencia.
-
 - Do NOT duplicate links between sections.
 - Do NOT invent links.
 - Do NOT omit sections.
@@ -233,38 +241,60 @@ RAW CONTENT:
 ${raw}
 `;
 
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            {
-                                text: prompt
-                            }
-                        ]
-                    }
-                ]
-            })
-        }
-    );
+    for (const model of GEMINI_MODELS) {
+        try {
+            console.log("Trying Gemini model:", model);
 
-    if (!response.ok) {
-        const err = await response.text();
-        throw new Error("Gemini error: " + err);
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                role: "user",
+                                parts: [
+                                    {
+                                        text: prompt
+                                    }
+                                ]
+                            }
+                        ],
+                        generationConfig: {
+                            temperature: 0.2
+                        }
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                const errText = await response.text();
+
+                console.warn(`Model ${model} failed:`, errText);
+
+                lastError = errText;
+
+                continue;
+            }
+
+            const data = await response.json();
+
+            console.log("Gemini success with:", model);
+            console.log("GEMINI RAW RESPONSE:", data);
+
+            return data.candidates?.[0]?.content?.parts?.[0]?.text || "N/A";
+
+        } catch (err) {
+            console.warn(`Crash with model ${model}:`, err);
+
+            lastError = err;
+        }
     }
 
-    const data = await response.json();
-
-    console.log("GEMINI RAW RESPONSE:", data);
-
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || "N/A";
+    throw new Error("All Gemini models failed: " + lastError);
 }
 
 function parseAIResponse(text) {

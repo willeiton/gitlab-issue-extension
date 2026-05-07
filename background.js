@@ -208,6 +208,7 @@ DESCRIPTION:
 > {DATABASE_URL or "N.A."}
 
 Rules:
+- ALL generated content MUST be written in Spanish.
 - Use the provided TICKET field as TICKET_CODE.
 - Use the provided URL as TICKET_URL.
 - Use the RAW CONTENT section as the primary source of truth.
@@ -242,7 +243,8 @@ Module - Short description
 
 - The Referencias section must ALWAYS contain the support ticket reference using:
 [{TICKET_CODE}]({TICKET_URL})
-
+- Each item inside the Referencias section must be written on its own separate line.
+- Always leave a line break between reference links.
 - If additional links are found in the RAW CONTENT and they are NOT identified as:
   - database links
   - evidence links

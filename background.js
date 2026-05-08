@@ -28,6 +28,8 @@ chrome.action.onClicked.addListener(async (tab) => {
             return;
         }
 
+        await validateSupportSession();
+
         // Ensure content script
         let isLoaded = false;
 
@@ -541,4 +543,30 @@ issue: tq-dev/qms/daruma#${issueNumber}`
     }
 
     return await response.json();
+}
+
+async function validateSupportSession() {
+    const {
+        ENVIRONMENT,
+        ALLOWED_DOMAIN,
+        SESSION_COOKIE_NAME
+    } = await getConfig();
+
+    // Dev environment skips validation
+    if (ENVIRONMENT !== "production") {
+        return true;
+    }
+
+    const cookie = await chrome.cookies.get({
+        url: `https://${ALLOWED_DOMAIN}`,
+        name: SESSION_COOKIE_NAME
+    });
+
+    if (!cookie) {
+        throw new Error(
+            "Support session not found. Please log in again."
+        );
+    }
+
+    return true;
 }

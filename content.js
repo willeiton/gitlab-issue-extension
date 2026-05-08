@@ -76,10 +76,16 @@ function showFinalResult(text) {
     const el = createOrGetOverlay();
 
     const textarea = el.querySelector('#text');
+
     textarea.style.display = "block";
     textarea.value = text;
 
     el.querySelector('#copy').style.display = "inline-block";
+
+    // Auto close after 6 seconds
+    setTimeout(() => {
+        el.remove();
+    }, 6000);
 }
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -99,7 +105,7 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 function extractTicketData() {
-    const blocks = document.querySelectorAll('.ticketpostcontentsdetailscontainer');
+    const blocks = document.querySelectorAll('.ticketpostcontentsdetails');
 
     if (!blocks.length) return null;
 

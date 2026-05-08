@@ -126,10 +126,15 @@ chrome.action.onClicked.addListener(async (tab) => {
         });
         await updateStep(tab.id, steps[3], "done");
 
+        // Open created issue in new tab
+        await chrome.tabs.create({
+            url: issue.web_url
+        });
+
         // FINAL RESULT
         chrome.tabs.sendMessage(tab.id, {
             type: "SHOW_RESULT",
-            payload: `Issue created: ${issue.web_url}`
+            payload: `✅ Issue created:\n${issue.web_url}`
         });
 
     } catch (err) {

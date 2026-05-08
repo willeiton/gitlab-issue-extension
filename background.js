@@ -317,6 +317,7 @@ Module - Short description
 - Do NOT omit sections.
 - Do NOT add explanations.
 - Do NOT add extra text outside TITLE and DESCRIPTION.
+- Do NOT invent urls.
 - Keep strict formatting.
 
 DATA:

@@ -441,6 +441,14 @@ async function appendToNotion({
             },
             body: JSON.stringify({
                 children: [
+                    // 2 empty spaces
+                    ...Array.from({ length: 2 }, () => ({
+                        object: "block",
+                        type: "paragraph",
+                        paragraph: {
+                            rich_text: []
+                        }
+                    })),
                     {
                         object: "block",
                         type: "to_do",

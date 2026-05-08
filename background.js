@@ -91,7 +91,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             throw new Error("AI format invalid");
         }
 
-        const { title, description } = parseAIResponse(aiRaw);
+        const { title, description, client} = parseAIResponse(aiRaw);
 
         console.log("PARSED TITLE:", title);
         console.log("PARSED DESCRIPTION:", description);
@@ -118,7 +118,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             issueUrl: issue.web_url,
             issueNumber: issue.iid,
             title,
-            client: extractedData.client,
+            client: client,
             ticketCode: extractedData.ticketCode,
             ticketUrl: extractedData.ticketUrl
         });
@@ -401,9 +401,19 @@ function parseAIResponse(text) {
         .substring(descriptionStart + 12)
         .trim();
 
+    // Extract client from generated description
+    const clientMatch = description.match(
+        /#### Cliente\s*>\s*(.*)/i
+    );
+
+    const client = clientMatch
+        ? clientMatch[1].trim()
+        : "N/A";
+
     return {
         title,
-        description
+        description,
+        client
     };
 }
 

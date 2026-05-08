@@ -459,8 +459,8 @@ async function appendToNotion({
                     })),
                     {
                         object: "block",
-                        type: "to_do",
-                        to_do: {
+                        type: "heading_2",
+                        heading_2: {
                             rich_text: [
                                 {
                                     type: "text",
@@ -477,8 +477,7 @@ async function appendToNotion({
                                         }
                                     }
                                 }
-                            ],
-                            checked: false
+                            ]
                         }
                     },
 
@@ -487,6 +486,12 @@ async function appendToNotion({
                         type: "paragraph",
                         paragraph: {
                             rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "ticket_code: "
+                                    }
+                                },
                                 {
                                     type: "text",
                                     text: {

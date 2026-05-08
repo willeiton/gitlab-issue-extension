@@ -135,13 +135,13 @@ async function createGitlabIssue({ title, description }) {
         userId,
         milestoneId,
         labels,
-        severity,
-        estimateHours
+        estimateHours,
+        severity
     } = await getConfig();
 
     const dueDate = new Date().toISOString().split("T")[0];
 
-    const allLabels = [...labels, severity].join(",");
+    const allLabels = labels.join(",");
 
     const response = await fetch(
         `${baseUrl}/projects/${projectId}/issues`,
@@ -154,6 +154,8 @@ async function createGitlabIssue({ title, description }) {
             body: JSON.stringify({
                 title,
                 description,
+                issue_type: "incident",
+                severity,
                 assignee_ids: [userId],
                 milestone_id: milestoneId,
                 labels: allLabels,

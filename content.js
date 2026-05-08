@@ -24,21 +24,64 @@ function createOrGetOverlay() {
 
                 <ul id="steps" style="margin-top:10px; padding-left: 20px;"></ul>
 
-                <textarea id="text" style="width:100%;height:80px;margin-top:10px;display:none;"></textarea>
+                 <textarea 
+                    id="text" 
+                    style="
+                        width:100%;
+                        height:80px;
+                        margin-top:10px;
+                        display:none;
+                    "
+                ></textarea>
 
-                <button id="copy" style="margin-top:10px; float:left;">Copy</button>
-                <button id="close" style="margin-top:10px; float:right;">X</button>
+                <button 
+                    id="copy" 
+                    style="
+                        margin-top:10px;
+                        float:left;
+                        display:none;
+                    "
+                >
+                    Copy
+                </button>
+
+                <button 
+                    id="close" 
+                    style="
+                        margin-top:10px;
+                        float:right;
+                        display:none;
+                    "
+                >
+                    X
+                </button>
             </div>
         `;
 
         document.body.appendChild(container);
 
-        container.querySelector('#copy').onclick = () => {
-            const value = container.querySelector('#text').value;
-            navigator.clipboard.writeText(value);
+        const copyButton =
+            container.querySelector('#copy');
+
+        copyButton.onclick = async () => {
+            const textarea =
+                container.querySelector('#text');
+
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+
+            try {
+                await navigator.clipboard.writeText(
+                    textarea.value
+                );
+
+            } catch (err) {
+                document.execCommand('copy');
+            }
         };
 
-        const closeButton = container.querySelector('#close');
+        const closeButton =
+            container.querySelector('#close');
 
         closeButton.onclick = () => {
             if (overlayAutoCloseTimeout) {
@@ -47,7 +90,9 @@ function createOrGetOverlay() {
             }
 
             const overlay =
-                document.getElementById('gitlab-extension-overlay');
+                document.getElementById(
+                    'gitlab-extension-overlay'
+                );
 
             if (overlay) {
                 overlay.remove();
@@ -64,10 +109,18 @@ function initSteps(steps) {
 
     ul.innerHTML = '';
 
+    ul.style.listStyle = 'none';
+    ul.style.paddingLeft = '0';
+    ul.style.marginTop = '10px';
+
     steps.forEach(step => {
         const li = document.createElement('li');
+
         li.id = `step-${step}`;
         li.textContent = `⏳ ${step}`;
+
+        li.style.marginBottom = '6px';
+
         ul.appendChild(li);
     });
 }
@@ -92,33 +145,15 @@ function showFinalResult(text) {
 
     const textarea = el.querySelector('#text');
 
-    textarea.style.display = "block";
-    textarea.value = text;
+    const copyButton = el.querySelector('#copy');
 
-    container.querySelector('#copy').onclick = async () => {
-        const textarea =
-            container.querySelector('#text');
-
-        textarea.select();
-        textarea.setSelectionRange(0, 99999);
-
-        try {
-            await navigator.clipboard.writeText(
-                textarea.value
-            );
-
-        } catch (err) {
-
-            // Fallback
-            document.execCommand('copy');
-        }
-    };
+    const closeButton = el.querySelector('#close');
 
     const isError =
         text.includes("❌") ||
         text.toLowerCase().includes("error");
 
-    // Only auto-close on success
+    // SUCCESS
     if (!isError) {
 
         if (overlayAutoCloseTimeout) {
@@ -136,7 +171,16 @@ function showFinalResult(text) {
             overlayAutoCloseTimeout = null;
 
         }, 6000);
+
+        return;
     }
+
+    // ERROR
+    textarea.style.display = "block";
+    textarea.value = text;
+
+    copyButton.style.display = "inline-block";
+    closeButton.style.display = "inline-block";
 }
 
 chrome.runtime.onMessage.addListener((message) => {

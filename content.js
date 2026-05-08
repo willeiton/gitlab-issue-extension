@@ -1,3 +1,5 @@
+let overlayAutoCloseTimeout = null;
+
 function createOrGetOverlay() {
     let container = document.getElementById('gitlab-extension-overlay');
 
@@ -24,7 +26,7 @@ function createOrGetOverlay() {
 
                 <textarea id="text" style="width:100%;height:80px;margin-top:10px;display:none;"></textarea>
 
-                <button id="copy" style="margin-top:10px;display:none;">Copy</button>
+                <button id="copy" style="margin-top:10px; float:left;">Copy</button>
                 <button id="close" style="margin-top:10px; float:right;">X</button>
             </div>
         `;
@@ -36,8 +38,20 @@ function createOrGetOverlay() {
             navigator.clipboard.writeText(value);
         };
 
-        container.querySelector('#close').onclick = () => {
-            container.remove();
+        const closeButton = container.querySelector('#close');
+
+        closeButton.onclick = () => {
+            if (overlayAutoCloseTimeout) {
+                clearTimeout(overlayAutoCloseTimeout);
+                overlayAutoCloseTimeout = null;
+            }
+
+            const overlay =
+                document.getElementById('gitlab-extension-overlay');
+
+            if (overlay) {
+                overlay.remove();
+            }
         };
     }
 
@@ -60,6 +74,7 @@ function initSteps(steps) {
 
 function updateStep(step, status) {
     const el = document.getElementById(`step-${step}`);
+
     if (!el) return;
 
     const icons = {
@@ -80,12 +95,48 @@ function showFinalResult(text) {
     textarea.style.display = "block";
     textarea.value = text;
 
-    el.querySelector('#copy').style.display = "inline-block";
+    container.querySelector('#copy').onclick = async () => {
+        const textarea =
+            container.querySelector('#text');
 
-    // Auto close after 6 seconds
-    setTimeout(() => {
-        el.remove();
-    }, 6000);
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+
+        try {
+            await navigator.clipboard.writeText(
+                textarea.value
+            );
+
+        } catch (err) {
+
+            // Fallback
+            document.execCommand('copy');
+        }
+    };
+
+    const isError =
+        text.includes("❌") ||
+        text.toLowerCase().includes("error");
+
+    // Only auto-close on success
+    if (!isError) {
+
+        if (overlayAutoCloseTimeout) {
+            clearTimeout(overlayAutoCloseTimeout);
+        }
+
+        overlayAutoCloseTimeout = setTimeout(() => {
+            const overlay =
+                document.getElementById('gitlab-extension-overlay');
+
+            if (overlay) {
+                overlay.remove();
+            }
+
+            overlayAutoCloseTimeout = null;
+
+        }, 6000);
+    }
 }
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -137,7 +188,8 @@ function extractTicketData() {
     if (!target) return null;
 
     // Ticket code
-    const ticketElement = document.querySelector('.ticketinfoitem');
+    const ticketElement =
+        document.querySelector('.ticketinfoitem');
 
     let ticketCode = "N/A";
     let ticketId = null;

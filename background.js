@@ -143,7 +143,8 @@ chrome.action.onClicked.addListener(async (tab) => {
         if (tab?.id) {
             chrome.tabs.sendMessage(tab.id, {
                 type: "SHOW_RESULT",
-                payload: "❌ Error creating issue"
+                payload:
+                    `❌ Error creating issue\n\n${err.message || err}`
             });
         }
     }

@@ -420,7 +420,6 @@ async function appendToNotion({
         notionPageId
     } = await getConfig();
 
-
     const response = await fetch(
         `https://api.notion.com/v1/blocks/${notionPageId}/children`,
         {
@@ -493,7 +492,23 @@ issue: tq-dev/qms/daruma#${issueNumber}`
                                 }
                             ]
                         }
-                    }
+                    },
+
+                    // 6 empty spaces
+                    ...Array.from({ length: 6 }, () => ({
+                        object: "block",
+                        type: "paragraph",
+                        paragraph: {
+                            rich_text: []
+                        }
+                    })),
+
+                    // 6 separators
+                    ...Array.from({ length: 6 }, () => ({
+                        object: "block",
+                        type: "divider",
+                        divider: {}
+                    }))
                 ]
             })
         }

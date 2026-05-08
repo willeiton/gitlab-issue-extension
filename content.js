@@ -131,26 +131,47 @@ function extractTicketData() {
     if (!target) return null;
 
     // Ticket code
-    const ticketContainer = document.querySelector('#itemoptionsnav');
+    const ticketElement = document.querySelector('.ticketinfoitem');
 
     let ticketCode = "N/A";
+    let ticketId = null;
+    let ticketUrl = null;
 
-    if (ticketContainer) {
-        const links = ticketContainer.querySelectorAll('.ticketinfoitemlink');
+    if (ticketElement) {
+        const onclickValue =
+            ticketElement.getAttribute('onclick') || '';
 
-        for (const link of links) {
-            const text = link.innerText.trim();
+        // Extract full ticket URL
+        const urlMatch = onclickValue.match(
+            /loadViewportData\('([^']+)'\)/
+        );
 
-            if (/^[A-Z]+-\d+-\d+$/i.test(text)) {
-                ticketCode = text;
-                break;
-            }
-        }
+        ticketUrl = urlMatch
+            ? urlMatch[1]
+            : null;
+
+        // Extract numeric ticket ID
+        const ticketIdMatch = ticketUrl?.match(
+            /\/View\/(\d+)\//
+        );
+
+        ticketId = ticketIdMatch
+            ? ticketIdMatch[1]
+            : null;
+
+        // Extract visible ticket code
+        ticketCode =
+            ticketElement
+                .querySelector('.ticketinfoitemlink')
+                ?.textContent
+                .trim() || "N/A";
     }
 
     return {
         raw: target,
-        ticketCode
+        ticketCode,
+        ticketId,
+        ticketUrl,
     };
 }
 

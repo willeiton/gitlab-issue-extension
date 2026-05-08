@@ -12,6 +12,8 @@ export async function getConfig() {
         severity: ENV.GITLAB_SEVERITY,
         estimateHours: ENV.GITLAB_ESTIMATE_HOURS,
         environment: ENV.ENVIRONMENT,
-        allowedDomain: ENV.ALLOWED_DOMAIN
+        allowedDomain: ENV.ALLOWED_DOMAIN,
+        notionToken: ENV.NOTION_TOKEN,
+        notionPageId: ENV.NOTION_PAGE_ID
     };
 }

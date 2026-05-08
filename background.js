@@ -46,7 +46,8 @@ chrome.action.onClicked.addListener(async (tab) => {
         const steps = [
             "Extracting data",
             "Formatting with AI",
-            "Creating GitLab issue"
+            "Creating GitLab issue",
+            "Updating Notion"
         ];
 
         // INIT UI
@@ -75,7 +76,7 @@ chrome.action.onClicked.addListener(async (tab) => {
         await updateStep(tab.id, steps[1], "active");
         const aiInput = {
             ticketCode: extractedData.ticketCode,
-            url: tab.url,
+            ticketUrl: extractedData.ticketUrl,
             raw: extractedData.raw
         };
 
@@ -108,6 +109,20 @@ chrome.action.onClicked.addListener(async (tab) => {
         });
 
         await updateStep(tab.id, steps[2], "done");
+
+        // -------------------------
+        // STEP 4 - Notion
+        // -------------------------
+        await updateStep(tab.id, steps[3], "active");
+        await appendToNotion({
+            issueUrl: issue.web_url,
+            issueNumber: issue.iid,
+            title,
+            client: extractedData.client,
+            ticketCode: extractedData.ticketCode,
+            ticketUrl: extractedData.ticketUrl
+        });
+        await updateStep(tab.id, steps[3], "done");
 
         // FINAL RESULT
         chrome.tabs.sendMessage(tab.id, {
@@ -180,7 +195,11 @@ async function updateStep(tabId, step, status) {
     });
 }
 
-async function formatWithGemini({ ticketCode, url, raw }) {
+async function formatWithGemini({
+                                    ticketCode,
+                                    ticketUrl,
+                                    raw
+                                }) {
     const { GEMINI_API_KEY } = await getConfig();
 
     const GEMINI_MODELS = [
@@ -227,7 +246,7 @@ DESCRIPTION:
 Rules:
 - ALL generated content MUST be written in Spanish.
 - Use the provided TICKET field as TICKET_CODE.
-- Use the provided URL as TICKET_URL.
+- Use the provided TICKET_URL value in the Referencias section.
 - Use the RAW CONTENT section as the primary source of truth.
 - Infer all fields from the RAW CONTENT.
 
@@ -301,9 +320,9 @@ Module - Short description
 - Keep strict formatting.
 
 DATA:
-TICKET: ${ticketCode}
+TICKET_CODE: ${ticketCode}
 
-URL: ${url}
+TICKET_URL: ${ticketUrl}
 
 RAW CONTENT:
 ${raw}
@@ -385,4 +404,107 @@ function parseAIResponse(text) {
         title,
         description
     };
+}
+
+async function appendToNotion({
+                                  issueUrl,
+                                  issueNumber,
+                                  title,
+                                  client,
+                                  ticketCode,
+                                  ticketUrl
+                              }) {
+    const {
+        notionToken,
+        notionPageId
+    } = await getConfig();
+
+
+    const response = await fetch(
+        `https://api.notion.com/v1/blocks/${notionPageId}/children`,
+        {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${notionToken}`,
+                "Content-Type": "application/json",
+                "Notion-Version": "2022-06-28"
+            },
+            body: JSON.stringify({
+                children: [
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "999 - "
+                                    }
+                                },
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: issueUrl,
+                                        link: {
+                                            url: issueUrl
+                                        }
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
+
+                    {
+                        object: "block",
+                        type: "paragraph",
+                        paragraph: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: ticketCode,
+                                        link: {
+                                            url: ticketUrl
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+
+                    {
+                        object: "block",
+                        type: "code",
+                        code: {
+                            language: "markdown",
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content:
+                                            `BUG: :bug: ${title}
+Cliente: ${client}
+Descripcion:
+issue: tq-dev/qms/daruma#${issueNumber}`
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            })
+        }
+    );
+
+    if (!response.ok) {
+        const err = await response.text();
+
+        throw new Error(
+            "Notion API error: " + err
+        );
+    }
+
+    return await response.json();
 }

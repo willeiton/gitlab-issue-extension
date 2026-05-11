@@ -283,9 +283,8 @@ Rules:
 - The TITLE must ALWAYS follow this exact format:
 Module - Short description
 
-- Use ONLY one separator:
- - 
-
+- Use ONLY one separator: -
+ 
 - Do NOT use:
   - en dash (–)
   - em dash (—)

@@ -438,6 +438,10 @@ async function appendToNotion({
         notionPageId
     } = await getConfig();
 
+    const startedAt = new Date().toLocaleString("es-CO", {
+        timeZone: "America/Bogota"
+    });
+
     const response = await fetch(
         `https://api.notion.com/v1/blocks/${notionPageId}/children`,
         {
@@ -499,6 +503,20 @@ async function appendToNotion({
                                         link: {
                                             url: ticketUrl
                                         }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        object: "block",
+                        type: "paragraph",
+                        paragraph: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: `Started at: ${startedAt}`
                                     }
                                 }
                             ]

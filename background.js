@@ -524,64 +524,78 @@ async function appendToNotion({
                     },
                     {
                         object: "block",
-                        type: "to_do",
-                        to_do: {
-                            rich_text: [
+                        type: "column_list",
+                        column_list: {
+                            children: [
                                 {
-                                    type: "text",
-                                    text: {
-                                        content: "Returned"
+                                    object: "block",
+                                    type: "column",
+                                    column: {
+                                        children: [
+                                            {
+                                                object: "block",
+                                                type: "to_do",
+                                                to_do: {
+                                                    rich_text: [
+                                                        {
+                                                            type: "text",
+                                                            text: { content: "Returned" }
+                                                        }
+                                                    ],
+                                                    checked: false
+                                                }
+                                            },
+                                            {
+                                                object: "block",
+                                                type: "to_do",
+                                                to_do: {
+                                                    rich_text: [
+                                                        {
+                                                            type: "text",
+                                                            text: { content: "Finished with deviation" }
+                                                        }
+                                                    ],
+                                                    checked: false
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    object: "block",
+                                    type: "column",
+                                    column: {
+                                        children: [
+                                            {
+                                                object: "block",
+                                                type: "to_do",
+                                                to_do: {
+                                                    rich_text: [
+                                                        {
+                                                            type: "text",
+                                                            text: { content: "Finished" }
+                                                        }
+                                                    ],
+                                                    checked: false
+                                                }
+                                            },
+                                            {
+                                                object: "block",
+                                                type: "to_do",
+                                                to_do: {
+                                                    rich_text: [
+                                                        {
+                                                            type: "text",
+                                                            text: { content: "Not finished" }
+                                                        }
+                                                    ],
+                                                    checked: false
+                                                }
+                                            }
+                                        ]
                                     }
                                 }
-                            ],
-                            checked: false
-                        }
-                    },
-
-                    {
-                        object: "block",
-                        type: "to_do",
-                        to_do: {
-                            rich_text: [
-                                {
-                                    type: "text",
-                                    text: {
-                                        content: "Finished"
-                                    }
-                                }
-                            ],
-                            checked: false
-                        }
-                    },
-
-                    {
-                        object: "block",
-                        type: "to_do",
-                        to_do: {
-                            rich_text: [
-                                {
-                                    type: "text",
-                                    text: {
-                                        content: "Finished with deviation"
-                                    }
-                                }
-                            ],
-                            checked: false
-                        }
-                    },
-                    {
-                        object: "block",
-                        type: "to_do",
-                        to_do: {
-                            rich_text: [
-                                {
-                                    type: "text",
-                                    text: {
-                                        content: "Not finished"
-                                    }
-                                }
-                            ],
-                            checked: false
+                            ]
                         }
                     },
                     {

@@ -182,8 +182,7 @@ async function createGitlabIssue({ title, description }) {
                 assignee_ids: [userId],
                 milestone_id: milestoneId,
                 labels: allLabels,
-                due_date: dueDate,
-                time_estimate: estimateHours * 3600
+                due_date: dueDate
             })
         }
     );
@@ -193,7 +192,19 @@ async function createGitlabIssue({ title, description }) {
         throw new Error(`GitLab API error: ${errorText}`);
     }
 
-    return await response.json();
+    const issue = await response.json();
+
+    await fetch(
+        `${baseUrl}/projects/${projectId}/issues/${issue.iid}/time_estimate?duration=${estimateHours}`,
+        {
+            method: "POST",
+            headers: {
+                "PRIVATE-TOKEN": gitlabToken
+            }
+        }
+    );
+
+    return issue;
 }
 
 async function updateStep(tabId, step, status) {

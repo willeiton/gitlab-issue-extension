@@ -271,6 +271,14 @@ Module - Short description
   - brackets
   - pipes
   - extra symbols
+  
+- In "Cliente" section:
+  - NEVER include URLs.
+  - Remove any http/https links completely from the value.
+  - If the client field contains a URL, strip it and keep only the readable name.
+  - Example:
+    "Demo-Industria https://cloud.darumasoftware.com/app.php/demo-industria"
+    → "Demo-Industria"
 
 - The module name must start with uppercase.
 

@@ -506,89 +506,64 @@ async function appendToNotion({
                     },
                     {
                         object: "block",
-                        type: "column_list",
-                        column_list: {
-                            children: [
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
                                 {
-                                    object: "block",
-                                    type: "column",
-                                    column: {
-                                        children: [
-                                            {
-                                                object: "block",
-                                                type: "to_do",
-                                                to_do: {
-                                                    rich_text: [
-                                                        {
-                                                            type: "text",
-                                                            text: {
-                                                                content: "Returned"
-                                                            }
-                                                        }
-                                                    ],
-                                                    checked: false
-                                                }
-                                            },
-
-                                            {
-                                                object: "block",
-                                                type: "to_do",
-                                                to_do: {
-                                                    rich_text: [
-                                                        {
-                                                            type: "text",
-                                                            text: {
-                                                                content: "Finished with deviation"
-                                                            }
-                                                        }
-                                                    ],
-                                                    checked: false
-                                                }
-                                            }
-                                        ]
-                                    }
-                                },
-
-                                {
-                                    object: "block",
-                                    type: "column",
-                                    column: {
-                                        children: [
-                                            {
-                                                object: "block",
-                                                type: "to_do",
-                                                to_do: {
-                                                    rich_text: [
-                                                        {
-                                                            type: "text",
-                                                            text: {
-                                                                content: "Finished"
-                                                            }
-                                                        }
-                                                    ],
-                                                    checked: false
-                                                }
-                                            },
-
-                                            {
-                                                object: "block",
-                                                type: "to_do",
-                                                to_do: {
-                                                    rich_text: [
-                                                        {
-                                                            type: "text",
-                                                            text: {
-                                                                content: "Not finished"
-                                                            }
-                                                        }
-                                                    ],
-                                                    checked: false
-                                                }
-                                            }
-                                        ]
+                                    type: "text",
+                                    text: {
+                                        content: "Returned"
                                     }
                                 }
-                            ]
+                            ],
+                            checked: false
+                        }
+                    },
+
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Finished"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
+
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Finished with deviation"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Not finished"
+                                    }
+                                }
+                            ],
+                            checked: false
                         }
                     },
                     {

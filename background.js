@@ -504,7 +504,68 @@ async function appendToNotion({
                             ]
                         }
                     },
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Returned"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
 
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Finished"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
+
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Finished with deviation"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
+                    {
+                        object: "block",
+                        type: "to_do",
+                        to_do: {
+                            rich_text: [
+                                {
+                                    type: "text",
+                                    text: {
+                                        content: "Not finished"
+                                    }
+                                }
+                            ],
+                            checked: false
+                        }
+                    },
                     {
                         object: "block",
                         type: "code",

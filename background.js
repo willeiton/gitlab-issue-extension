@@ -8,11 +8,11 @@ chrome.action.onClicked.addListener(async (tab) => {
 
         const {
             environment,
-            allowedDomain
+            allowed_domain
         } = await getConfig();
 
         if (environment && environment === "production") {
-            const isAllowed = tab.url.startsWith(`https://${allowedDomain}`);
+            const isAllowed = tab.url.startsWith(`https://${allowed_domain}`);
 
             if (!isAllowed) {
                 console.warn("Blocked domain:", tab.url);
@@ -450,7 +450,7 @@ async function appendToNotion({
             body: JSON.stringify({
                 children: [
                     // 2 empty spaces
-                    ...Array.from({ length: 2 }, () => ({
+                    ...Array.from({ length: 1 }, () => ({
                         object: "block",
                         type: "paragraph",
                         paragraph: {
@@ -619,19 +619,19 @@ issue: tq-dev/qms/daruma#${issueNumber}`
 
 async function validateSupportSession() {
     const {
-        ENVIRONMENT,
-        ALLOWED_DOMAIN,
-        SESSION_COOKIE_NAME
+        environment,
+        allowed_domain,
+        session_cookie_name
     } = await getConfig();
 
     // Dev environment skips validation
-    if (ENVIRONMENT !== "production") {
+    if (environment !== "production") {
         return true;
     }
 
     const cookie = await chrome.cookies.get({
-        url: `https://${ALLOWED_DOMAIN}`,
-        name: SESSION_COOKIE_NAME
+        url: `https://${allowed_domain}`,
+        name: session_cookie_name
     });
 
     if (!cookie) {

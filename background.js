@@ -251,6 +251,17 @@ DESCRIPTION:
 #### Base de datos
 > {DATABASE_URL or "N.A."}
 
+
+- At the very end of always append the following line:
+
+Contenido generado por IA
+
+- This line must:
+  - Be the last line of the DESCRIPTION
+  - Not be inside any section (Cliente, Módulo, Hallazgo, etc.)
+  - Not be modified, translated, or reformatted
+  - Not contain markdown symbols
+  
 Rules:
 - ALL generated content MUST be written in Spanish.
 - Use the provided TICKET field as TICKET_CODE.
